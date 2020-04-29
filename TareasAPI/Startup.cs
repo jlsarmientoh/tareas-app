@@ -30,6 +30,27 @@ namespace TareasAPI
             services.AddControllers();
 
             services.AddSingleton<ITareasService,TareasServices>();
+
+            services.AddSwaggerDocument( config => 
+            {
+                config.PostProcess = document => 
+                {
+                    document.Info.Version = "v1";
+                    document.Info.Title = "Tareas API";
+                    document.Info.Description = "PICA Módulo .Net";
+                    document.Info.TermsOfService = "None";
+                    document.Info.Contact = new NSwag.OpenApiContact
+                    {
+                        Name = "PICA",
+                        Email = "pica@javeriana.edu.co"
+                    };
+                    document.Info.License = new NSwag.OpenApiLicense
+                    {
+                        Name = "Use under LICX",
+                        Url = "https://example.com/license"
+                    };
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +71,9 @@ namespace TareasAPI
             {
                 endpoints.MapControllers();
             });
+
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
         }
     }
 }

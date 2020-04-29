@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Javeriana.Api.Model;
 using Javeriana.Api.Interfaces;
 using Javeriana.Api.Exceptions;
+using Microsoft.AspNetCore.Http;
 
 namespace Javeriana.Api.Controllers
 {
@@ -26,6 +27,8 @@ namespace Javeriana.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<Tarea> GetTarea(long id)
         {
             try{
@@ -39,6 +42,8 @@ namespace Javeriana.Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Tarea> CreateTarea([FromBody]Tarea tarea)
         {
             if(!ModelState.IsValid) return BadRequest();
@@ -48,9 +53,14 @@ namespace Javeriana.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateTarea(long id, [FromBody] Tarea tarea)
         {    
             try{
+                if(!ModelState.IsValid) return BadRequest();
+
                 _servicio.UpdateTarea(id,tarea);
                 return Ok();
             }
@@ -61,6 +71,8 @@ namespace Javeriana.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult DeleteTarea(long id){
             try
             {
