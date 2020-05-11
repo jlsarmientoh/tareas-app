@@ -1,17 +1,15 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Javeriana.Api.Interfaces;
 using Javeriana.Api.Services;
+using Javeriana.Api.HealthChecks;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Newtonsoft.Json;
 
 namespace TareasAPI
 {
@@ -51,6 +49,8 @@ namespace TareasAPI
                     };
                 };
             });
+
+            services.AddHealthChecks().AddCheck("memoria", new ApiHealthCheck());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +70,27 @@ namespace TareasAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions {
+                    ResponseWriter = async (context, report) => 
+                    {
+                        context.Response.ContentType = "application/json";
+
+                        var response = new HealthCheckResponse 
+                        {
+                            Status = report.Status.ToString(),
+                            Checks = report.Entries.Select (x => new CheckInfo
+                            {
+                                Status = x.Value.Status.ToString(),
+                                Component = x.Key,
+                                Description = x.Value.Description
+                            }),
+                            Duration = report.TotalDuration
+                        };
+                        var json = JsonConvert.SerializeObject(response);
+                        byte[] bytes = Encoding.ASCII.GetBytes(json);
+                        await context.Response.Body.WriteAsync(bytes);
+                    }
+                });
             });
 
             app.UseOpenApi();
