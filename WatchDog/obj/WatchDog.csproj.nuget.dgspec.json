@@ -1,0 +1,70 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/yorch/Documentos/dotnet/tareas/WatchDog/WatchDog.csproj": {}
+  },
+  "projects": {
+    "/home/yorch/Documentos/dotnet/tareas/WatchDog/WatchDog.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/yorch/Documentos/dotnet/tareas/WatchDog/WatchDog.csproj",
+        "projectName": "WatchDog",
+        "projectPath": "/home/yorch/Documentos/dotnet/tareas/WatchDog/WatchDog.csproj",
+        "packagesPath": "/home/yorch/.nuget/packages/",
+        "outputPath": "/home/yorch/Documentos/dotnet/tareas/WatchDog/obj/",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "/usr/share/dotnet/sdk/NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "/home/yorch/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "AspNetCore.HealthChecks.UI": {
+              "target": "Package",
+              "version": "[3.1.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.201/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
