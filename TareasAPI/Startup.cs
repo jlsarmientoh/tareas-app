@@ -10,6 +10,8 @@ using Javeriana.Api.Services;
 using Javeriana.Api.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Newtonsoft.Json;
+using HealthChecks.UI.Client;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace TareasAPI
 {
@@ -50,7 +52,14 @@ namespace TareasAPI
                 };
             });
 
-            services.AddHealthChecks().AddCheck("memoria", new ApiHealthCheck());
+            services.AddHealthChecks()
+                .AddCheck("memoria", new ApiHealthCheck())
+                .AddSqlServer(
+                    connectionString : Configuration.GetConnectionString("DbHealth"),
+                    healthQuery : "SELECT 1;",
+                    name : "sql",
+                    failureStatus: HealthStatus.Degraded
+                );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,25 +80,8 @@ namespace TareasAPI
             {
                 endpoints.MapControllers();
                 endpoints.MapHealthChecks("/health", new HealthCheckOptions {
-                    ResponseWriter = async (context, report) => 
-                    {
-                        context.Response.ContentType = "application/json";
-
-                        var response = new HealthCheckResponse 
-                        {
-                            Status = report.Status.ToString(),
-                            Checks = report.Entries.Select (x => new CheckInfo
-                            {
-                                Status = x.Value.Status.ToString(),
-                                Component = x.Key,
-                                Description = x.Value.Description
-                            }),
-                            Duration = report.TotalDuration
-                        };
-                        var json = JsonConvert.SerializeObject(response);
-                        byte[] bytes = Encoding.ASCII.GetBytes(json);
-                        await context.Response.Body.WriteAsync(bytes);
-                    }
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
                 });
             });
 

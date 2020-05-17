@@ -8,7 +8,7 @@ namespace Javeriana.Api.HealthChecks
 {
     public class ApiHealthCheck : IHealthCheck
     {
-        public long Threshold { get; set; } = 1024L * 1024L;//; * 1024L;
+        public long Threshold { get; set; } = 1024L * 1024L *100L;//; * 1024L;
 
         public Task<HealthCheckResult> CheckHealthAsync(
             HealthCheckContext context,
@@ -29,7 +29,7 @@ namespace Javeriana.Api.HealthChecks
                 : HealthStatus.Degraded;
 
             return Task.FromResult(new HealthCheckResult(status,
-                description: "Se reporta degradado cuando la memoria reservada es superior a :" + Threshold,
+                description: "Se reporta degradado cuando la memoria reservada es superior a :" + Threshold + " Bytes",
                 exception: null,
                 data: data));
         }
