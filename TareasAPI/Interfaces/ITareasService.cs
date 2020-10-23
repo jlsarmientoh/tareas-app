@@ -1,16 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Javeriana.Api.Model;
 
 namespace Javeriana.Api.Interfaces
 {
     public interface ITareasService
     {
-        public IEnumerable<Tarea> GetTareas();
+        public Task<IEnumerable<Tarea>> GetTareasAsync();
 
-        public Tarea GetTarea(long Id);
+        public Task<Tarea> GetTarea(int Id);
 
-        public Tarea CreateTarea(Tarea tarea);
+        public Task<Tarea> CreateTareaAsync(Tarea tarea);
 
         public void UpdateTarea(long id, Tarea tareaActualizada);
 

@@ -1,45 +1,45 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Javeriana.Api.Exceptions;
 using Javeriana.Api.Interfaces;
 using Javeriana.Api.Model;
+using Javeriana.Core.Interfaces;
 
 namespace Javeriana.Api.Services
 {
     public class TareasServices : ITareasService
     {
+        private IAsyncRepository<Javeriana.Core.Entities.Tarea> _respository;
+
+        private IUnitOfWork _unitOfWork;
+
         private List<Tarea> misTareas;
 
         private int contador;
 
-        public TareasServices()
+        public TareasServices(IAsyncRepository<Javeriana.Core.Entities.Tarea> respository, IUnitOfWork unitOfWork)
         {
-            this.contador = 1;
-            this.misTareas = new List<Tarea>();
+            _respository = respository;
+            _unitOfWork = unitOfWork;
         }
 
-        public IEnumerable<Tarea> GetTareas()
+        public async Task<IEnumerable<Tarea>> GetTareasAsync()
         {
-            return misTareas;
+            return await _respository.ListAllAsync();
         }
 
-        public Tarea GetTarea(long Id)
+        public async Task<Tarea> GetTarea(int Id)
         {
-            var tarea = misTareas.Find(tarea => tarea.Id == Id);
-
-            if(tarea == null) throw new TareaNoExisteException("La tarea con el siguiente id no existe: " + Id);
-
-            return tarea;
+            return await _respository.GetByIdAsync(Id);
         }
 
-        public Tarea CreateTarea(Tarea tarea)
+        public async Task<Tarea> CreateTareaAsync(Tarea tarea)
         {
-            tarea.Id = contador;
-            misTareas.Add(tarea);
-            contador++;
-
-            return tarea;
+            var tareaCreada = await _respository.AddAsync(tarea);
+            await _unitOfWork.ConfirmarAsync();
+            return tareaCreada;
         }
 
         public void UpdateTarea(long id, Tarea tareaActualizada){

@@ -12,6 +12,11 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Newtonsoft.Json;
 using HealthChecks.UI.Client;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Javeriana.Core.Interfaces;
+using Javeriana.Core.Entities;
+using TareasAPI.Repositories;
+using Javeriana.Core.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace TareasAPI
 {
@@ -28,6 +33,10 @@ namespace TareasAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAsyncRepository<Tarea>, TareasRespository>();
+            services.AddDbContext<TareasContext>(options => options.UseInMemoryDatabase("Tareas"));
 
             services.AddSingleton<ITareasService,TareasServices>();
 

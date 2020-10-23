@@ -22,14 +22,14 @@ namespace Javeriana.Api.Controllers
         [HttpGet]
         public IEnumerable<Tarea> GetTareas()
         {
-            var tareas = _servicio.GetTareas();
-            return tareas;
+            var tareas = _servicio.GetTareasAsync();
+            return tareas.Result;
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Tarea> GetTarea(long id)
+        public ActionResult<Tarea> GetTarea(int id)
         {
             try{
                 var tarea = _servicio.GetTarea(id);
@@ -48,7 +48,7 @@ namespace Javeriana.Api.Controllers
         {
             if(!ModelState.IsValid) return BadRequest();
 
-            var tareaCreada = _servicio.CreateTarea(tarea);
+            var tareaCreada = _servicio.CreateTareaAsync(tarea);
             return Ok(tareaCreada);
         }
 

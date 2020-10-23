@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace TareasAPI.Repositories
 {
-    public class TareasRespositorycs : IAsyncRepository<Tarea>
+    public class TareasRespository : IAsyncRepository<Tarea>
     {
         protected readonly TareasContext _dbContext;
 
-        public TareasRespositorycs(TareasContext dbContext)
+        public TareasRespository(TareasContext dbContext)
         {
             _dbContext = dbContext;
         }
