@@ -13,8 +13,8 @@ namespace Javeriana.Api.Interfaces
 
         public Task<Tarea> CreateTareaAsync(Tarea tarea);
 
-        public void UpdateTarea(long id, Tarea tareaActualizada);
+        public Task UpdateTareaAsync(int id, Tarea tareaActualizada);
 
-        public void DeleteTarea(long id);
+        public Task DeleteTareaAsync(int id);
     }
 }

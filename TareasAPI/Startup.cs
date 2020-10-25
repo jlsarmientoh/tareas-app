@@ -37,8 +37,9 @@ namespace TareasAPI
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAsyncRepository<Tarea>, TareasRespository>();
             services.AddDbContext<TareasContext>(options => options.UseInMemoryDatabase("Tareas"));
+            //services.AddDbContext<TareasContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DbTareas")));
 
-            services.AddSingleton<ITareasService,TareasServices>();
+            services.AddScoped<ITareasService,TareasServices>();
 
             services.AddSwaggerDocument( config => 
             {

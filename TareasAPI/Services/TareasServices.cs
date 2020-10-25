@@ -1,5 +1,4 @@
-using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Javeriana.Api.Exceptions;
@@ -15,10 +14,6 @@ namespace Javeriana.Api.Services
 
         private IUnitOfWork _unitOfWork;
 
-        private List<Tarea> misTareas;
-
-        private int contador;
-
         public TareasServices(IAsyncRepository<Javeriana.Core.Entities.Tarea> respository, IUnitOfWork unitOfWork)
         {
             _respository = respository;
@@ -27,35 +22,62 @@ namespace Javeriana.Api.Services
 
         public async Task<IEnumerable<Tarea>> GetTareasAsync()
         {
-            return await _respository.ListAllAsync();
+            var resultado = await _respository.ListAllAsync();
+
+            var tareas = resultado
+                .Select( tarea => new Tarea 
+                { 
+                    Id = tarea.Id, 
+                    IsComplete = tarea.IsComplete , 
+                    Name = tarea.Name 
+                });
+
+            return tareas;
         }
 
         public async Task<Tarea> GetTarea(int Id)
         {
-            return await _respository.GetByIdAsync(Id);
+            var resultado = await _respository.GetByIdAsync(Id);
+
+            var tarea = new Tarea 
+            {
+                Id = resultado.Id,
+                IsComplete = resultado.IsComplete,
+                Name = resultado.Name 
+            };
+
+            return tarea;
         }
 
         public async Task<Tarea> CreateTareaAsync(Tarea tarea)
         {
-            var tareaCreada = await _respository.AddAsync(tarea);
+            var nuevaTarea = new Core.Entities.Tarea
+            { 
+                IsComplete = tarea.IsComplete,
+                Name = tarea.Name
+            };
+            nuevaTarea = await _respository.AddAsync(nuevaTarea);
             await _unitOfWork.ConfirmarAsync();
-            return tareaCreada;
+            tarea.Id = nuevaTarea.Id;
+            return tarea;
         }
 
-        public void UpdateTarea(long id, Tarea tareaActualizada){
-             var tareaOrigen = misTareas.Find(tarea => tarea.Id == id);
+        public async Task UpdateTareaAsync(int id, Tarea tareaActualizada){
+            var tareaOrigen = await _respository.GetByIdAsync(id);
              if(tareaOrigen == null) throw new TareaNoExisteException("La tarea con el siguiente id no existe: " + id);
              
             tareaOrigen.Name = tareaActualizada.Name;
-            tareaOrigen.IsComplete = tareaActualizada.IsComplete;             
+            tareaOrigen.IsComplete = tareaActualizada.IsComplete;
+
+            await _respository.UpdateAsync(tareaOrigen);
         }
 
-        public void DeleteTarea(long id)
+        public async Task DeleteTareaAsync(int id)
         {
-            var tareaElminar = misTareas.Find(tarea => tarea.Id == id);
-            if(tareaElminar == null) throw new TareaNoExisteException("La tarea con el siguiente id no existe: " + id);
-            
-            misTareas.Remove(tareaElminar);
+            var tareaElminar = await _respository.GetByIdAsync(id);
+            if (tareaElminar == null) throw new TareaNoExisteException("La tarea con el siguiente id no existe: " + id);
+
+            await _respository.DeleteAsync(tareaElminar);
         }
     }
 }

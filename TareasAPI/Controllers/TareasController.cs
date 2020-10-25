@@ -37,7 +37,7 @@ namespace Javeriana.Api.Controllers
             }
             catch (TareaNoExisteException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             } 
         }
 
@@ -56,15 +56,15 @@ namespace Javeriana.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdateTarea(long id, [FromBody] Tarea tarea)
+        public IActionResult UpdateTarea(int id, [FromBody] Tarea tarea)
         {    
             try{
                 if(!ModelState.IsValid) return BadRequest();
 
-                _servicio.UpdateTarea(id,tarea);
+                _servicio.UpdateTareaAsync(id,tarea);
                 return Ok();
             }
-            catch (TareaNoExisteException e)
+            catch (TareaNoExisteException)
             {
                 return NotFound(tarea);
             }
@@ -73,15 +73,15 @@ namespace Javeriana.Api.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteTarea(long id){
+        public IActionResult DeleteTarea(int id){
             try
             {
-                _servicio.DeleteTarea(id);
+                _servicio.DeleteTareaAsync(id);
                 return Ok();
             }
             catch (TareaNoExisteException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
         }
     }
