@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TareasAPI", "TareasAPI\TareasAPI.csproj", "{E89595D6-BF5C-4E39-BC2F-503652AF5B43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TareasAPI", "TareasAPI\TareasAPI.csproj", "{E89595D6-BF5C-4E39-BC2F-503652AF5B43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatchDog", "WatchDog\WatchDog.csproj", "{6A945541-6342-49D8-93C9-781B08189824}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WatchDog", "WatchDog\WatchDog.csproj", "{6A945541-6342-49D8-93C9-781B08189824}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{F36E950E-C082-4C2A-AF3F-95E85A2662BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{E89595D6-BF5C-4E39-BC2F-503652AF5B43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -44,5 +43,23 @@ Global
 		{6A945541-6342-49D8-93C9-781B08189824}.Release|x64.Build.0 = Release|Any CPU
 		{6A945541-6342-49D8-93C9-781B08189824}.Release|x86.ActiveCfg = Release|Any CPU
 		{6A945541-6342-49D8-93C9-781B08189824}.Release|x86.Build.0 = Release|Any CPU
+		{F36E950E-C082-4C2A-AF3F-95E85A2662BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F36E950E-C082-4C2A-AF3F-95E85A2662BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F36E950E-C082-4C2A-AF3F-95E85A2662BD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F36E950E-C082-4C2A-AF3F-95E85A2662BD}.Debug|x64.Build.0 = Debug|Any CPU
+		{F36E950E-C082-4C2A-AF3F-95E85A2662BD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F36E950E-C082-4C2A-AF3F-95E85A2662BD}.Debug|x86.Build.0 = Debug|Any CPU
+		{F36E950E-C082-4C2A-AF3F-95E85A2662BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F36E950E-C082-4C2A-AF3F-95E85A2662BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F36E950E-C082-4C2A-AF3F-95E85A2662BD}.Release|x64.ActiveCfg = Release|Any CPU
+		{F36E950E-C082-4C2A-AF3F-95E85A2662BD}.Release|x64.Build.0 = Release|Any CPU
+		{F36E950E-C082-4C2A-AF3F-95E85A2662BD}.Release|x86.ActiveCfg = Release|Any CPU
+		{F36E950E-C082-4C2A-AF3F-95E85A2662BD}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {396B4F52-11DC-4417-9DE4-4CE4B8105F0A}
 	EndGlobalSection
 EndGlobal
