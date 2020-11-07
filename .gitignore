@@ -7,3 +7,5 @@ WatchDog/obj
 WatchDog/bin
 WatchDog\obj
 WatchDog\bin
+*.v2
+.vs/tareas/v16/.suo
