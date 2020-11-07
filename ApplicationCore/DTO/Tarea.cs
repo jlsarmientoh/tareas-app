@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Javeriana.Api.Model
+namespace Javeriana.Api.DTO
 {
     public class Tarea : IEquatable<Tarea>
     {

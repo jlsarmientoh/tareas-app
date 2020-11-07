@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Javeriana.Api.Model;
+using Javeriana.Api.DTO;
 using Javeriana.Api.Interfaces;
 using Javeriana.Api.Exceptions;
 using Microsoft.AspNetCore.Http;

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Javeriana.Api.Model;
+using Javeriana.Api.DTO;
 
 namespace Javeriana.Api.Interfaces
 {

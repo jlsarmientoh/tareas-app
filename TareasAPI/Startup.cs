@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -9,7 +7,6 @@ using Javeriana.Api.Interfaces;
 using Javeriana.Api.Services;
 using Javeriana.Api.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Newtonsoft.Json;
 using HealthChecks.UI.Client;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Javeriana.Core.Interfaces;
