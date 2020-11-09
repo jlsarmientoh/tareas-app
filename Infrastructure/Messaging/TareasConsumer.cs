@@ -8,6 +8,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,11 +49,17 @@ namespace Infrastructure.Messaging
         }
 
 
-        public Task ProcesarMensaje(Mensaje mensaje)
+        public async Task ProcesarMensaje(Mensaje mensaje)
         {
             _logger.LogInformation($"[Mensaje recibido] - [Fecha:{mensaje.FechaEnvio}] - [Tarea: {mensaje.Tarea.Id} {mensaje.Tarea.Name} {mensaje.Tarea.IsComplete}]");
 
-            return Task.CompletedTask;
+            string fileName = "tareas.csv";
+            string registro = $"{mensaje.FechaEnvio},{mensaje.Tarea.Id},{mensaje.Tarea.Name},{mensaje.Tarea.IsComplete}";
+
+            using (StreamWriter writer = new StreamWriter(fileName, true))
+            {
+                await writer.WriteLineAsync(registro);
+            }
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
