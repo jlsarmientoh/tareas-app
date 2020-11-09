@@ -5,6 +5,9 @@ using Javeriana.Api.Exceptions;
 using Javeriana.Api.Interfaces;
 using Javeriana.Api.DTO;
 using Javeriana.Core.Interfaces;
+using Javeriana.Core.Interfaces.Messaging;
+using ApplicationCore.DTO;
+using System;
 
 namespace Javeriana.Api.Services
 {
@@ -14,10 +17,13 @@ namespace Javeriana.Api.Services
 
         private IUnitOfWork _unitOfWork;
 
-        public TareasServices(IAsyncRepository<Javeriana.Core.Entities.Tarea> respository, IUnitOfWork unitOfWork)
+        private IPublisher _publisher;
+
+        public TareasServices(IAsyncRepository<Javeriana.Core.Entities.Tarea> respository, IUnitOfWork unitOfWork, IPublisher publisher)
         {
             _respository = respository;
             _unitOfWork = unitOfWork;
+            _publisher = publisher;
         }
 
         public async Task<IEnumerable<Tarea>> GetTareasAsync()
@@ -59,6 +65,15 @@ namespace Javeriana.Api.Services
             nuevaTarea = await _respository.AddAsync(nuevaTarea);
             await _unitOfWork.ConfirmarAsync();
             tarea.Id = nuevaTarea.Id;
+
+            Mensaje mensaje = new Mensaje
+            {
+                FechaEnvio = DateTime.Now,
+                Tarea = tarea
+            };
+
+            _publisher.PublicarMensaje(mensaje);
+
             return tarea;
         }
 

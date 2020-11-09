@@ -14,6 +14,8 @@ using Javeriana.Core.Entities;
 using TareasAPI.Repositories;
 using Javeriana.Core.Contexts;
 using Microsoft.EntityFrameworkCore;
+using Javeriana.Core.Interfaces.Messaging;
+using Infrastructure.Messaging;
 
 namespace TareasAPI
 {
@@ -35,6 +37,8 @@ namespace TareasAPI
             services.AddScoped<IAsyncRepository<Tarea>, TareasRespository>();
             services.AddDbContext<TareasContext>(options => options.UseInMemoryDatabase("Tareas"));
             //services.AddDbContext<TareasContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DbTareas")));
+            services.AddTransient<IPublisher, TareasPublisher>();
+            services.AddHostedService<TareasConsumer>();
 
             services.AddScoped<ITareasService,TareasServices>();
 

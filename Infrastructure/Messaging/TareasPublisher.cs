@@ -4,6 +4,8 @@ using System.Text;
 using RabbitMQ.Client;
 using Javeriana.Core.Interfaces.Messaging;
 using Microsoft.Extensions.Configuration;
+using ApplicationCore.DTO;
+using Newtonsoft.Json;
 
 namespace Infrastructure.Messaging
 {
@@ -16,7 +18,7 @@ namespace Infrastructure.Messaging
         {
             _connectionFactory = new ConnectionFactory() 
             { 
-                HostName = configuration.GetValue<string>("MQServer") 
+                HostName = configuration.GetValue<string>("MQServer")
             };
             _queueName = configuration.GetValue<string>("queueName");
         }
@@ -26,7 +28,7 @@ namespace Infrastructure.Messaging
             
         }
 
-        public void PublicarMensaje(string mensaje)
+        public void PublicarMensaje(Mensaje mensaje)
         {
             using (var connection = _connectionFactory.CreateConnection())
             using (var channel = connection.CreateModel())
@@ -39,13 +41,14 @@ namespace Infrastructure.Messaging
                     arguments: null
                     );
 
-                var body = Encoding.UTF8.GetBytes(mensaje);
+                string content = JsonConvert.SerializeObject(mensaje);
+                var body = Encoding.UTF8.GetBytes(content);
                 var properties = channel.CreateBasicProperties();
                 properties.Persistent = true;
 
                 channel.BasicPublish(
                     exchange: "",
-                    routingKey: "task_queue",
+                    routingKey: _queueName,
                     basicProperties: properties,
                     body: body);
 
