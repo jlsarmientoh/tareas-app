@@ -8,29 +8,29 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Messaging
 {
-    public class TareasConsumer : BackgroundService, IConsumer
+    public class LogConsumer : BackgroundService, IConsumer
     {
-        private readonly ILogger<TareasConsumer> _logger;
+        private readonly ILogger<LogConsumer> _logger;
         private readonly ConnectionFactory _connectionFactory;
-        private readonly string _queueName;
+        private readonly string _exchangeName;
+        private string _queueName;
         private IModel _channel;
         private IConnection _connection;
 
-        public TareasConsumer(IConfiguration configuration, ILogger<TareasConsumer> logger)
+        public LogConsumer(IConfiguration configuration, ILogger<LogConsumer> logger)
         {
             _logger = logger;
             _connectionFactory = new ConnectionFactory()
             {
                 HostName = configuration.GetValue<string>("MQServer")
             };
-            _queueName = configuration.GetValue<string>("queueName");
+            _exchangeName = configuration.GetValue<string>("exchangeName");
             Init();
         }
 
@@ -38,28 +38,24 @@ namespace Infrastructure.Messaging
         {
             _connection = _connectionFactory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(
-                    queue: _queueName,
-                    durable: true,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null
-                    );
-            _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+            _channel.ExchangeDeclare(
+                exchange: _exchangeName,
+                type: ExchangeType.Fanout
+                );
+            
+            _queueName = _channel.QueueDeclare().QueueName;
+
+            _channel.QueueBind(
+                queue: _queueName,
+                exchange: _exchangeName,
+                routingKey: ""
+                );
         }
 
-
-        public async Task ProcesarMensaje(Mensaje mensaje)
+        public Task ProcesarMensaje(Mensaje mensaje)
         {
             _logger.LogInformation($"[Mensaje recibido] - [Fecha:{mensaje.FechaEnvio}] - [Tarea: {mensaje.Tarea.Id} {mensaje.Tarea.Name} {mensaje.Tarea.IsComplete}]");
-
-            string fileName = "tareas.csv";
-            string registro = $"{mensaje.FechaEnvio},{mensaje.Tarea.Id},{mensaje.Tarea.Name},{mensaje.Tarea.IsComplete}";
-
-            using (StreamWriter writer = new StreamWriter(fileName, true))
-            {
-                await writer.WriteLineAsync(registro);
-            }
+            return Task.CompletedTask;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -73,11 +69,9 @@ namespace Infrastructure.Messaging
                 Mensaje mensaje = JsonConvert.DeserializeObject<Mensaje>(content);
 
                 await ProcesarMensaje(mensaje);
-
-                _channel.BasicAck(enventArgs.DeliveryTag, false);
             };
 
-            _channel.BasicConsume(_queueName, false, consumer);
+            _channel.BasicConsume(_queueName, true, consumer);
 
             return Task.CompletedTask;
         }

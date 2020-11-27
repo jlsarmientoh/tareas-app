@@ -1,4 +1,5 @@
-﻿using Javeriana.Core.Entities;
+﻿using Javeriana.Core.Seguridad.Entities;
+using Javeriana.Core.Tareas.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

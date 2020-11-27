@@ -1,5 +1,5 @@
 ﻿using Javeriana.Core.Contexts;
-using Javeriana.Core.Entities;
+using Javeriana.Core.Tareas.Entities;
 using Javeriana.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;

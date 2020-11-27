@@ -1,4 +1,4 @@
-﻿namespace Javeriana.Core.Entities
+﻿namespace Javeriana.Core.Seguridad.Entities
 {
     public class Usuario
     {
