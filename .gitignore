@@ -1,11 +1,9 @@
-TareasAPI/obj
-TareasAPI/bin
-TareasAPI\\obj
-TareasAPI\\bin
+**/bin/Debug/
+**/bin/Release/
+**/obj/
+
 .vscode
-WatchDog/obj
-WatchDog/bin
-WatchDog\\obj
-WatchDog\\bin
 *.v2
 .vs/tareas/v16/.suo
+
+
