@@ -6,4 +6,7 @@
 *.v2
 .vs/tareas/v16/.suo
 
+*.csv
+.vs/
+
 
