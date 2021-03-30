@@ -130,5 +130,51 @@ namespace IntegrationTest
 
             Assert.Equal("https://localhost:5001/tareas/var1/var2/var3", fullUrl);
         }
+
+        [Fact]
+        public void ShouldBuildRequestPathWithQueryParams()
+        {
+            string basePath = "https://localhost:5001";
+            string endpoint = "tareas/{0}/{1}/{2}";
+            Peticion<Tarea> peticion = new Peticion<Tarea>(endpoint);
+            peticion.PathVariables.Add("var1");
+            peticion.PathVariables.Add("var2");
+            peticion.PathVariables.Add("var3");
+
+            peticion.Params.Add("param1", "string1");
+            peticion.Params.Add("param2", "string2");
+            string[] vars = ((List<string>)peticion.PathVariables).ToArray();
+            string formatedEndpoint = string.Format(peticion.Endpoint, vars);
+            string fullUrl = string.Format("{0}/{1}", basePath, formatedEndpoint);
+            StringBuilder stringBuilder = new StringBuilder(fullUrl);
+            if (peticion.Params.Count > 0)
+            {
+                int index = 0;
+                foreach (var param in peticion.Params)
+                {
+                    stringBuilder.Append((index == 0) ? "?" : "&");
+                    stringBuilder.Append($"{param.Key}={param.Value}");
+                    index++;
+                }
+            }
+
+            Assert.Equal("https://localhost:5001/tareas/var1/var2/var3?param1=string1&param2=string2", stringBuilder.ToString());
+        }
+
+        [Fact]
+        public void ShouldBuildRequestPathWithQueryParamsFromPeticion()
+        {
+            string basePath = "https://localhost:5001";
+            string endpoint = "tareas/{0}/{1}/{2}";
+            Peticion<Tarea> peticion = new Peticion<Tarea>($"{basePath}/{endpoint}");
+            peticion.PathVariables.Add("var1");
+            peticion.PathVariables.Add("var2");
+            peticion.PathVariables.Add("var3");
+
+            peticion.Params.Add("param1", "string1");
+            peticion.Params.Add("param2", "string2");
+
+            Assert.Equal("https://localhost:5001/tareas/var1/var2/var3?param1=string1&param2=string2", peticion.ResolverRequestURL());
+        }
     }
 }

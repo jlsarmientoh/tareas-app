@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Infrastructure.WebServices
@@ -15,11 +16,15 @@ namespace Infrastructure.WebServices
 
         private readonly HttpClient _client;
 
-        private readonly string _basePath;
-
-        private readonly string _contentType;
+        private readonly string _contentType = "application/json";
 
         private readonly ILogger<JSONRestClient<T>> _logger;
+
+        public JSONRestClient(HttpClient client, ILogger<JSONRestClient<T>> logger)
+        {
+            _client = client;
+            _logger = logger;
+        }
 
         public Task<Respuesta<T>> Delete(Peticion<T> peticion)
         {
@@ -32,7 +37,7 @@ namespace Infrastructure.WebServices
             setHeaders(peticion);
             try
             {
-                var response = await _client.GetAsync(string.Format("{0}/{1}", _basePath, buildRequestPath(peticion)));
+                var response = await _client.GetAsync(peticion.ResolverRequestURL());
                 respuesta.HttpStatus = (int)response.StatusCode;
                 response.EnsureSuccessStatusCode();
                 var msg = await response.Content.ReadAsStringAsync();
@@ -42,6 +47,9 @@ namespace Infrastructure.WebServices
                     _logger.LogDebug($"{header.Key} : {string.Join(" ", header.Value)}");
                     respuesta.Headers.Add(header.Key, string.Join(" ", header.Value));
                 }
+
+                respuesta.Body = await JsonSerializer.DeserializeAsync<T>(await response.Content?.ReadAsStreamAsync());
+
             }
             catch (HttpRequestException ex)
             {
@@ -52,6 +60,11 @@ namespace Infrastructure.WebServices
             {
                 _logger.LogError($"Message :{ex.Message}");
                 respuesta.Mensaje = "Petición inválida";
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError($"Message :{ex.Message}");
+                respuesta.Mensaje = "No se pudo obtener el cuerpo de la respuesta";
             }
 
             return respuesta;
@@ -80,7 +93,5 @@ namespace Infrastructure.WebServices
                 _client.DefaultRequestHeaders.Add(header.Key, header.Value);
             }
         }
-
-        private string buildRequestPath(Peticion<T> peticion) => string.Format(peticion.Endpoint, ((List<string>)peticion.PathVariables).ToArray());
     }
 }
