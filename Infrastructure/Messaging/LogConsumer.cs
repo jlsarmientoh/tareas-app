@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -36,20 +37,28 @@ namespace Infrastructure.Messaging
 
         private void Init()
         {
-            _connection = _connectionFactory.CreateConnection();
-            _channel = _connection.CreateModel();
-            _channel.ExchangeDeclare(
-                exchange: _exchangeName,
-                type: ExchangeType.Fanout
-                );
-            
-            _queueName = _channel.QueueDeclare().QueueName;
+            try 
+            {
+                _connection = _connectionFactory.CreateConnection();
+                _channel = _connection.CreateModel();
+                _channel.ExchangeDeclare(
+                    exchange: _exchangeName,
+                    type: ExchangeType.Fanout
+                    );
 
-            _channel.QueueBind(
-                queue: _queueName,
-                exchange: _exchangeName,
-                routingKey: ""
-                );
+                _queueName = _channel.QueueDeclare().QueueName;
+
+                _channel.QueueBind(
+                    queue: _queueName,
+                    exchange: _exchangeName,
+                    routingKey: ""
+                    );
+            }
+            catch (BrokerUnreachableException ex)
+            {
+                _logger.LogError(ex, $"No se puede conectar a RabbitMQ : {ex.Message}");
+            }
+            
         }
 
         public Task ProcesarMensaje(Mensaje mensaje)
@@ -71,15 +80,15 @@ namespace Infrastructure.Messaging
                 await ProcesarMensaje(mensaje);
             };
 
-            _channel.BasicConsume(_queueName, true, consumer);
+            _channel?.BasicConsume(_queueName, true, consumer);
 
             return Task.CompletedTask;
         }
 
         public override void Dispose()
         {
-            _channel.Close();
-            _connection.Close();
+            _channel?.Close();
+            _connection?.Close();
             base.Dispose();
         }
     }

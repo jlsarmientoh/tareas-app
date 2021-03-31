@@ -11,29 +11,29 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.WebServices
 {
-    public class JSONRestClient<T> : IRestClient<T>
+    public class JSONRestClient<T,R> : IRestClient<T,R>
     {
 
         private readonly HttpClient _client;
 
         private readonly string _contentType = "application/json";
 
-        private readonly ILogger<JSONRestClient<T>> _logger;
+        private readonly ILogger<JSONRestClient<T,R>> _logger;
 
-        public JSONRestClient(HttpClient client, ILogger<JSONRestClient<T>> logger)
+        public JSONRestClient(HttpClient client, ILogger<JSONRestClient<T,R>> logger)
         {
             _client = client;
             _logger = logger;
         }
 
-        public Task<Respuesta<T>> Delete(Peticion<T> peticion)
+        public Task<Respuesta<R>> Delete(Peticion<T> peticion)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<Respuesta<T>> Get(Peticion<T> peticion)
+        public async Task<Respuesta<R>> Get(Peticion<T> peticion)
         {
-            Respuesta<T> respuesta = new Respuesta<T>();
+            Respuesta<R> respuesta = new Respuesta<R>();
             setHeaders(peticion);
             try
             {
@@ -48,7 +48,7 @@ namespace Infrastructure.WebServices
                     respuesta.Headers.Add(header.Key, string.Join(" ", header.Value));
                 }
 
-                respuesta.Body = await JsonSerializer.DeserializeAsync<T>(await response.Content?.ReadAsStreamAsync());
+                respuesta.Body = await JsonSerializer.DeserializeAsync<R>(await response.Content?.ReadAsStreamAsync());
 
             }
             catch (HttpRequestException ex)
@@ -70,12 +70,12 @@ namespace Infrastructure.WebServices
             return respuesta;
         }
 
-        public Task<Respuesta<T>> Post(Peticion<T> peticion)
+        public Task<Respuesta<R>> Post(Peticion<T> peticion)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Respuesta<T>> Put(Peticion<T> peticion)
+        public Task<Respuesta<R>> Put(Peticion<T> peticion)
         {
             throw new NotImplementedException();
         }

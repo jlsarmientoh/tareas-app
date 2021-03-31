@@ -11,5 +11,9 @@ namespace ApplicationCore.DTO
         public T Body { get; set; }
         public string Mensaje { get; set; }
 
+        public Respuesta()
+        {
+            Headers = new Dictionary<string, string>();
+        }
     }
 }

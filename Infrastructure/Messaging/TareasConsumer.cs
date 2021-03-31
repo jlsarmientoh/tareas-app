@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,16 +37,24 @@ namespace Infrastructure.Messaging
 
         private void Init()
         {
-            _connection = _connectionFactory.CreateConnection();
-            _channel = _connection.CreateModel();
-            _channel.QueueDeclare(
-                    queue: _queueName,
-                    durable: true,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null
-                    );
-            _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+            try 
+            {
+                _connection = _connectionFactory.CreateConnection();
+                _channel = _connection.CreateModel();
+                _channel.QueueDeclare(
+                        queue: _queueName,
+                        durable: true,
+                        exclusive: false,
+                        autoDelete: false,
+                        arguments: null
+                        );
+                _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+            }
+            catch (BrokerUnreachableException ex)
+            {
+                _logger.LogError(ex, $"No se puede conectar a RabbitMQ : {ex.Message}");
+            }
+            
         }
 
 
@@ -77,15 +86,15 @@ namespace Infrastructure.Messaging
                 _channel.BasicAck(enventArgs.DeliveryTag, false);
             };
 
-            _channel.BasicConsume(_queueName, false, consumer);
+            _channel?.BasicConsume(_queueName, false, consumer);
 
             return Task.CompletedTask;
         }
 
         public override void Dispose()
         {
-            _channel.Close();
-            _connection.Close();
+            _channel?.Close();
+            _connection?.Close();
             base.Dispose();
         }
     }

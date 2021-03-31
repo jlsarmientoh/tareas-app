@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Interfaces
 {
-    public interface IRestClient<T>
+    public interface IRestClient<T,R>
     {
-        Task<Respuesta<T>> Get(Peticion<T> peticion);
+        Task<Respuesta<R>> Get(Peticion<T> peticion);
 
-        Task<Respuesta<T>> Post(Peticion<T> peticion);
+        Task<Respuesta<R>> Post(Peticion<T> peticion);
 
-        Task<Respuesta<T>> Put(Peticion<T> peticion);
+        Task<Respuesta<R>> Put(Peticion<T> peticion);
 
-        Task<Respuesta<T>> Delete(Peticion<T> peticion);
+        Task<Respuesta<R>> Delete(Peticion<T> peticion);
     }
 }
