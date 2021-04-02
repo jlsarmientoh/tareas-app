@@ -64,3 +64,23 @@ Las migraciones son una característica de EF para administrar cambios en el mod
 [Tutorial de migraciones](https://docs.microsoft.com/en-us/aspnet/core/data/ef-mvc/migrations?view=aspnetcore-5.0#the-data-model-snapshot)
 
 [Otro tutorial con instrcciones extras](https://thecodeblogger.com/2020/01/09/net-core-3-and-entity-framework-core-migrations/)
+
+### Certificados autofirmados (HTTPS)
+
+Desde la línea de comandos ejecute el siguiente comando de acuerdo al sistema operativo:
+
+En Windows (Powershell)
+
+`dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\aspnetapp.pfx -p crypticpassword`
+
+`dotnet dev-certs https --trust`
+
+En Linux o MacOs
+
+`dotnet dev-certs https -ep ~\.aspnet\https\aspnetapp.pfx -p crypticpassword`
+
+`dotnet dev-certs https --trust`
+
+> Nota: *crypticpassword* es el password para el certificado, puede ser cambiado por uno más seguro.  Para este ejemplo se recomienda dejarlo tal cómo está. Si desea cambiarlo, debe ajustar el password en docker-compose para la variable de entorno **ASPNETCORE_Kestrel__Certificates__Default__Password**
+
+[Guía completa para certificados autofirmados](https://docs.microsoft.com/en-us/dotnet/core/additional-tools/self-signed-certificates-guide)

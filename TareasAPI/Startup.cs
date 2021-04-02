@@ -84,7 +84,7 @@ namespace TareasAPI
             services.AddHealthChecks()
                 .AddCheck("memoria", new ApiHealthCheck())
                 .AddSqlServer(
-                    connectionString : Configuration.GetConnectionString("DbHealth"),
+                    connectionString : Configuration.GetConnectionString("DbTareas"),
                     healthQuery : "SELECT 1;",
                     name : "sql",
                     failureStatus: HealthStatus.Degraded
@@ -99,7 +99,8 @@ namespace TareasAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // Descomentar esta línea si usa Linux o Mac OS
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
