@@ -14,6 +14,6 @@ namespace Javeriana.Core.Tareas.Entities
 
         public bool IsComplete { get; set; }
 
-        public Usuario owner { get; set; }
+        public Usuario Owner { get; set; }
     }
 }

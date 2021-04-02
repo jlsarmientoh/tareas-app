@@ -16,8 +16,6 @@ using Microsoft.EntityFrameworkCore;
 using Javeriana.Core.Interfaces.Messaging;
 using Infrastructure.Messaging;
 using Javeriana.Core.Tareas.Entities;
-using ApplicationCore.Interfaces;
-using ApplicationCore.DTO;
 
 namespace TareasAPI
 {
@@ -30,6 +28,25 @@ namespace TareasAPI
 
         public IConfiguration Configuration { get; }
 
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+            //services.AddDbContext<TareasContext>(options => options.UseInMemoryDatabase("Tareas"));
+            services.AddDbContext<TareasContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DbTareas")));
+            ConfigureServices(services);
+        }
+
+        public void ConfigureDockerServices(IServiceCollection services)
+        {
+            services.AddDbContext<TareasContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DbTareas")));
+            ConfigureServices(services);
+        }
+
+        public void ConfigureProductionServices(IServiceCollection services)
+        {
+            services.AddDbContext<TareasContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DbTareas")));
+            ConfigureServices(services);
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -37,8 +54,7 @@ namespace TareasAPI
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAsyncRepository<Tarea>, TareasRespository>();
-            services.AddDbContext<TareasContext>(options => options.UseInMemoryDatabase("Tareas"));
-            //services.AddDbContext<TareasContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DbTareas")));
+            
             services.AddScoped<IPublisher, TareasPublisher>();
             services.AddHostedService<TareasConsumer>();
 

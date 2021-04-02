@@ -5,6 +5,7 @@ using Javeriana.Api.DTO;
 using Javeriana.Api.Interfaces;
 using Javeriana.Api.Exceptions;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace Javeriana.Api.Controllers
 {
@@ -44,11 +45,11 @@ namespace Javeriana.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Tarea> CreateTarea([FromBody]Tarea tarea)
+        public async Task<ActionResult<Tarea>> CreateTareaAsync([FromBody]Tarea tarea)
         {
             if(!ModelState.IsValid) return BadRequest();
 
-            var tareaCreada = _servicio.CreateTareaAsync(tarea);
+            Tarea tareaCreada = await _servicio.CreateTareaAsync(tarea);
             return Ok(tareaCreada);
         }
 

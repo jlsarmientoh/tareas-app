@@ -73,8 +73,8 @@ namespace Javeriana.Api.Services
             };
 
             
-            _publisher.PublicarMensaje(mensaje);
-            _publisher.DistribuirMensaje(mensaje);
+            //_publisher.PublicarMensaje(mensaje);
+            //_publisher.DistribuirMensaje(mensaje);
 
             return tarea;
         }

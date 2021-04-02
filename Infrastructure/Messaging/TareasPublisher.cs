@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using ApplicationCore.DTO;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using RabbitMQ.Client.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Messaging
 {
@@ -14,18 +16,28 @@ namespace Infrastructure.Messaging
     {
         private readonly ConnectionFactory _connectionFactory;
         private readonly IConnection _connection;
+        private readonly ILogger<TareasConsumer> _logger;
         private IModel _channel;
         private readonly string _queueName;
         private readonly string _exchangeName;
 
-        public TareasPublisher(IConfiguration configuration)
+        public TareasPublisher(IConfiguration configuration, ILogger<TareasConsumer> logger) 
         {
+            _logger = logger;
             _connectionFactory = new ConnectionFactory() 
             { 
                 HostName = configuration.GetValue<string>("MQServer")
             };
-            _connection = _connectionFactory.CreateConnection();
-            _channel = _connection.CreateModel();
+            try
+            {
+                _connection = _connectionFactory.CreateConnection();
+                _channel = _connection.CreateModel();
+            }
+            catch (BrokerUnreachableException ex) 
+            {
+                _logger.LogError(ex, $"No se puede conectar a RabbitMQ : {ex.Message}");
+            }
+            
             _queueName = configuration.GetValue<string>("queueName");
             _exchangeName = configuration.GetValue<string>("exchangeName");
         }
@@ -98,8 +110,8 @@ namespace Infrastructure.Messaging
 
         public void Dispose()
         {
-            _channel.Close();
-            _connection.Close();
+            _channel?.Close();
+            _connection?.Close();
         }
     }
 }

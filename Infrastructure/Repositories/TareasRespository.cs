@@ -21,14 +21,12 @@ namespace TareasAPI.Repositories
         public async Task<Tarea> AddAsync(Tarea entity)
         {
             await _dbContext.Tareas.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task DeleteAsync(Tarea entity)
         {
             _dbContext.Tareas.Remove(entity);
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<Tarea> GetByIdAsync(int id)
@@ -44,7 +42,7 @@ namespace TareasAPI.Repositories
         public async Task UpdateAsync(Tarea entity)
         {
             _dbContext.Entry(entity).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
+            //await _dbContext.SaveChangesAsync();
         }
     }
 }
