@@ -14,13 +14,13 @@ namespace TareasWeb.Controllers
 {
     public class TareasController : Controller
     {
-        private readonly IRestClient<Tarea, IEnumerable<Tarea>> _restClient;
+        private readonly IRestClient<Tarea> _restClient;
 
         private readonly ILogger<TareasController> _logger;
 
         private readonly IConfiguration _configuration;
 
-        public TareasController(IRestClient<Tarea, IEnumerable<Tarea>> restClient, ILogger<TareasController> logger, IConfiguration configuration)
+        public TareasController(IRestClient<Tarea> restClient, ILogger<TareasController> logger, IConfiguration configuration)
         {
             _restClient = restClient;
             _logger = logger;
@@ -32,8 +32,8 @@ namespace TareasWeb.Controllers
         public async Task<ActionResult> IndexAsync()
         {
             _logger.LogInformation("Preparando lista de tareas");
-            Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Todas"));
-            Respuesta<IEnumerable<Tarea>> respuesta = await _restClient.Get(peticion);
+            Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Lista"));
+            Respuesta<IEnumerable<Tarea>> respuesta = await _restClient.GetAsync<IEnumerable<Tarea>>(peticion);
             _logger.LogInformation("Lista de tareas parseadas, enviando a la vista");
             return View(respuesta.Body);
         }
@@ -53,14 +53,26 @@ namespace TareasWeb.Controllers
         // POST: TareasController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create([Bind("Name")] Tarea nuevaTarea )
         {
             try
             {
-                return RedirectToAction(nameof(IndexAsync));
+                if (ModelState.IsValid)
+                {
+                    _logger.LogInformation($"Enviando nueva tareas al servicio");
+                    Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Nueva"))
+                    {
+                        Body = nuevaTarea
+                    };
+                    Respuesta<Tarea> respuesta = await _restClient.PostAsync<Tarea>(peticion);
+                    _logger.LogInformation($"La tarea ha sido creada");
+                }
+
+                return RedirectToAction("Index");
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError(ex, $"No se pudo crear la tarea : ${ex.Message}");
                 return View();
             }
         }

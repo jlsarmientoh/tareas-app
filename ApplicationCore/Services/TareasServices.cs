@@ -41,7 +41,7 @@ namespace Javeriana.Api.Services
             return tareas;
         }
 
-        public async Task<Tarea> GetTarea(int Id)
+        public async Task<Tarea> GetTareaAsync(long Id)
         {
             var resultado = await _respository.GetByIdAsync(Id);
 
@@ -79,7 +79,7 @@ namespace Javeriana.Api.Services
             return tarea;
         }
 
-        public async Task UpdateTareaAsync(int id, Tarea tareaActualizada){
+        public async Task UpdateTareaAsync(long id, Tarea tareaActualizada){
             var tareaOrigen = await _respository.GetByIdAsync(id);
              if(tareaOrigen == null) throw new TareaNoExisteException("La tarea con el siguiente id no existe: " + id);
              
@@ -89,12 +89,13 @@ namespace Javeriana.Api.Services
             await _respository.UpdateAsync(tareaOrigen);
         }
 
-        public async Task DeleteTareaAsync(int id)
+        public async Task DeleteTareaAsync(long id)
         {
             var tareaElminar = await _respository.GetByIdAsync(id);
             if (tareaElminar == null) throw new TareaNoExisteException("La tarea con el siguiente id no existe: " + id);
 
             await _respository.DeleteAsync(tareaElminar);
+            await _unitOfWork.ConfirmarAsync();
         }
     }
 }

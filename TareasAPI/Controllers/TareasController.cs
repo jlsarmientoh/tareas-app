@@ -13,7 +13,7 @@ namespace Javeriana.Api.Controllers
     [Route("api/tareas")]
     public class TareasController : ControllerBase
     {
-        private ITareasService _servicio;
+        private readonly ITareasService _servicio;
 
         public TareasController(ITareasService tareaService)
         {
@@ -21,19 +21,20 @@ namespace Javeriana.Api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Tarea> GetTareas()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IEnumerable<Tarea>> GetTareasAsync()
         {
-            var tareas = _servicio.GetTareasAsync();
-            return tareas.Result;
+            var tareas = await _servicio.GetTareasAsync();
+            return tareas;
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Tarea> GetTarea(int id)
+        public async Task<ActionResult<Tarea>> GetTarea(int id)
         {
             try{
-                var tarea = _servicio.GetTarea(id);
+                var tarea = await _servicio.GetTareaAsync(id);
                 return Ok(tarea);
             }
             catch (TareaNoExisteException e)
@@ -57,12 +58,12 @@ namespace Javeriana.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdateTarea(int id, [FromBody] Tarea tarea)
+        public async Task<IActionResult> UpdateTareaAsync(long id, [FromBody] Tarea tarea)
         {    
             try{
                 if(!ModelState.IsValid) return BadRequest();
 
-                _servicio.UpdateTareaAsync(id,tarea);
+                await _servicio.UpdateTareaAsync(id,tarea);
                 return Ok();
             }
             catch (TareaNoExisteException)
@@ -74,10 +75,10 @@ namespace Javeriana.Api.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteTarea(int id){
+        public async Task<IActionResult> DeleteTareaAsync(int id){
             try
             {
-                _servicio.DeleteTareaAsync(id);
+                await _servicio.DeleteTareaAsync(id);
                 return Ok();
             }
             catch (TareaNoExisteException e)

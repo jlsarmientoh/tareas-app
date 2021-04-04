@@ -9,12 +9,12 @@ namespace Javeriana.Api.Interfaces
     {
         public Task<IEnumerable<Tarea>> GetTareasAsync();
 
-        public Task<Tarea> GetTarea(int Id);
+        public Task<Tarea> GetTareaAsync(long Id);
 
         public Task<Tarea> CreateTareaAsync(Tarea tarea);
 
-        public Task UpdateTareaAsync(int id, Tarea tareaActualizada);
+        public Task UpdateTareaAsync(long id, Tarea tareaActualizada);
 
-        public Task DeleteTareaAsync(int id);
+        public Task DeleteTareaAsync(long id);
     }
 }

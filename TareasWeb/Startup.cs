@@ -31,7 +31,7 @@ namespace TareasWeb
         {
             services.AddControllersWithViews();
             services.AddSingleton<HttpClient>();
-            services.AddSingleton<IRestClient<Tarea, IEnumerable<Tarea>>, JSONRestClient<Tarea, IEnumerable<Tarea>>>();
+            services.AddSingleton<IRestClient<Tarea>, JSONRestClient<Tarea>>();
 
             services.AddHealthChecks();
         }

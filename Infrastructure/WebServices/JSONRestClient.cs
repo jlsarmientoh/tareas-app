@@ -11,33 +11,29 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.WebServices
 {
-    public class JSONRestClient<T,R> : IRestClient<T,R>
+    public class JSONRestClient<T> : IRestClient<T>
     {
 
         private readonly HttpClient _client;
 
         private readonly string _contentType = "application/json";
 
-        private readonly ILogger<JSONRestClient<T,R>> _logger;
+        private readonly ILogger<JSONRestClient<T>> _logger;
 
-        public JSONRestClient(HttpClient client, ILogger<JSONRestClient<T,R>> logger)
+        public JSONRestClient(HttpClient client, ILogger<JSONRestClient<T>> logger)
         {
             _client = client;
             _logger = logger;
         }
 
-        public Task<Respuesta<R>> Delete(Peticion<T> peticion)
+        public async Task<Respuesta<TBody>> DeleteAsync<TBody>(Peticion<T> peticion)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Respuesta<R>> Get(Peticion<T> peticion)
-        {
-            Respuesta<R> respuesta = new Respuesta<R>();
+            Respuesta<TBody> respuesta = new Respuesta<TBody>();
             setHeaders(peticion);
             try
             {
-                var response = await _client.GetAsync(peticion.ResolverRequestURL());
+                var json = JsonSerializer.Serialize<T>(peticion.Body);
+                var response = await _client.DeleteAsync(peticion.ResolverRequestURL());
                 respuesta.HttpStatus = (int)response.StatusCode;
                 response.EnsureSuccessStatusCode();
                 var msg = await response.Content.ReadAsStringAsync();
@@ -48,7 +44,7 @@ namespace Infrastructure.WebServices
                     respuesta.Headers.Add(header.Key, string.Join(" ", header.Value));
                 }
 
-                respuesta.Body = await JsonSerializer.DeserializeAsync<R>(await response.Content?.ReadAsStreamAsync());
+                respuesta.Body = await JsonSerializer.DeserializeAsync<TBody>(await response.Content?.ReadAsStreamAsync());
 
             }
             catch (HttpRequestException ex)
@@ -70,14 +66,123 @@ namespace Infrastructure.WebServices
             return respuesta;
         }
 
-        public Task<Respuesta<R>> Post(Peticion<T> peticion)
+        public async Task<Respuesta<TBody>> GetAsync<TBody>(Peticion<T> peticion)
         {
-            throw new NotImplementedException();
+            Respuesta<TBody> respuesta = new Respuesta<TBody>();
+            setHeaders(peticion);
+            try
+            {
+                var response = await _client.GetAsync(peticion.ResolverRequestURL());
+                respuesta.HttpStatus = (int)response.StatusCode;
+                response.EnsureSuccessStatusCode();
+                var msg = await response.Content.ReadAsStringAsync();
+
+                foreach (var header in response.Headers)
+                {
+                    _logger.LogDebug($"{header.Key} : {string.Join(" ", header.Value)}");
+                    respuesta.Headers.Add(header.Key, string.Join(" ", header.Value));
+                }
+
+                respuesta.Body = await JsonSerializer.DeserializeAsync<TBody>(await response.Content?.ReadAsStreamAsync());
+
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError($"Message :{ex.Message}");
+                respuesta.Mensaje = ex.Message;
+            }
+            catch (FormatException ex)
+            {
+                _logger.LogError($"Message :{ex.Message}");
+                respuesta.Mensaje = "Petición inválida";
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError($"Message :{ex.Message}");
+                respuesta.Mensaje = "No se pudo obtener el cuerpo de la respuesta";
+            }
+
+            return respuesta;
         }
 
-        public Task<Respuesta<R>> Put(Peticion<T> peticion)
+        public async Task<Respuesta<TBody>> PostAsync<TBody>(Peticion<T> peticion)
         {
-            throw new NotImplementedException();
+            Respuesta<TBody> respuesta = new Respuesta<TBody>();
+            setHeaders(peticion);
+            try
+            {
+                var json = JsonSerializer.Serialize<T>(peticion.Body);
+                var response = await _client.PostAsync(peticion.ResolverRequestURL(), new StringContent(json, Encoding.UTF8, _contentType));
+                respuesta.HttpStatus = (int)response.StatusCode;
+                response.EnsureSuccessStatusCode();
+                var msg = await response.Content.ReadAsStringAsync();
+
+                foreach (var header in response.Headers)
+                {
+                    _logger.LogDebug($"{header.Key} : {string.Join(" ", header.Value)}");
+                    respuesta.Headers.Add(header.Key, string.Join(" ", header.Value));
+                }
+
+                respuesta.Body = await JsonSerializer.DeserializeAsync<TBody>(await response.Content?.ReadAsStreamAsync());
+
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError($"Message :{ex.Message}");
+                respuesta.Mensaje = ex.Message;
+            }
+            catch (FormatException ex)
+            {
+                _logger.LogError($"Message :{ex.Message}");
+                respuesta.Mensaje = "Petición inválida";
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError($"Message :{ex.Message}");
+                respuesta.Mensaje = "No se pudo obtener el cuerpo de la respuesta";
+            }
+
+            return respuesta;
+        }
+
+        public async Task<Respuesta<TBody>> PutAsync<TBody>(Peticion<T> peticion)
+        {
+            Respuesta<TBody> respuesta = new Respuesta<TBody>();
+            setHeaders(peticion);
+            try
+            {
+                var json = JsonSerializer.Serialize<T>(peticion.Body);
+                var response = await _client.PutAsync(peticion.ResolverRequestURL(), new StringContent(json, Encoding.UTF8, _contentType));
+                respuesta.HttpStatus = (int)response.StatusCode;
+                response.EnsureSuccessStatusCode();
+                var msg = await response.Content.ReadAsStringAsync();
+
+                foreach (var header in response.Headers)
+                {
+                    _logger.LogDebug($"{header.Key} : {string.Join(" ", header.Value)}");
+                    respuesta.Headers.Add(header.Key, string.Join(" ", header.Value));
+                }
+
+                respuesta.Body = await JsonSerializer.DeserializeAsync<TBody>(await response.Content?.ReadAsStreamAsync());
+
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError($"Message :{ex.Message}");
+                respuesta.Mensaje = ex.Message;
+            }
+            catch (FormatException ex)
+            {
+                _logger.LogError($"Message :{ex.Message}");
+                respuesta.Mensaje = "Petición inválida";
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError($"Message :{ex.Message}");
+                respuesta.Mensaje = "No se pudo obtener el cuerpo de la respuesta";
+            }
+
+            return respuesta;
         }
 
         private void setHeaders(Peticion<T> peticion)
