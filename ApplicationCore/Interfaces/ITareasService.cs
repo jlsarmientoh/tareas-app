@@ -7,7 +7,7 @@ namespace Javeriana.Api.Interfaces
 {
     public interface ITareasService
     {
-        public Task<IEnumerable<Tarea>> GetTareasAsync();
+         Task<IEnumerable<Tarea>> GetTareasAsync();
 
         public Task<Tarea> GetTareaAsync(long Id);
 
