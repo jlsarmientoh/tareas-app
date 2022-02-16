@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Javeriana.Api.Interfaces;
 using Javeriana.Api.Services;
 using Javeriana.Api.HealthChecks;
@@ -38,12 +39,18 @@ namespace TareasAPI
         public void ConfigureDockerServices(IServiceCollection services)
         {
             services.AddDbContext<TareasContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DbTareas")));
+            services.AddLogging(logginBuilder => {
+                logginBuilder.AddSeq(Configuration.GetSection("Seq"));
+            });
             ConfigureServices(services);
         }
 
         public void ConfigureProductionServices(IServiceCollection services)
         {
             services.AddDbContext<TareasContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DbTareas")));
+            services.AddLogging(logginBuilder => {
+                logginBuilder.AddSeq(Configuration.GetSection("Seq"));
+            });
             ConfigureServices(services);
         }
 
