@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace TareasWeb
 {
@@ -29,6 +30,9 @@ namespace TareasWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(logginBuilder => {
+                logginBuilder.AddSeq(Configuration.GetSection("Seq"));
+            });
             services.AddControllersWithViews();
             services.AddSingleton<HttpClient>();
             services.AddSingleton<IRestClient<Tarea>, JSONRestClient<Tarea>>();
@@ -49,7 +53,7 @@ namespace TareasWeb
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            // Descomentar esta línea si usa Linux o Mac OS
+            // Descomentar esta lï¿½nea si usa Linux o Mac OS
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
