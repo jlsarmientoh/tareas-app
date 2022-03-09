@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tareas-api-deployment
+  labels:
+    name: tareas-api-deployment
+    env: dev
+spec:
+  template:
+    metadata:
+      labels:
+        name: tareasapi
+    spec:
+      containers:
+      - name: tareasapi
+        image: tareasapi
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: Docker
+          - name: ASPNETCORE_URLS
+            value: http://+:80
+  replicas: 2
+  selector:
+    matchLabels:
+      name: tareasapi

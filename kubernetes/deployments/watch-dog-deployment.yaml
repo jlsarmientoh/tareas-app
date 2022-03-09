@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wathc-dog-deployment
+  labels:
+    name: wathc-dog-deployment
+    env: dev
+spec:
+  template:
+    metadata:
+      name: watchdog
+      labels:
+        name: watchdog
+    spec:
+      containers:
+        - name: watchdog
+          image: watchdog
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: Docker
+          - name: ASPNETCORE_URLS
+            value: http://+:80
+  replicas: 1
+  selector:
+    matchLabels:
+      name: watchdog
