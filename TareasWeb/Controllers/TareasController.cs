@@ -89,10 +89,15 @@ namespace TareasWeb.Controllers
         // POST: TareasController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit([Bind("Id,Name,IsComplete")] Tarea tarea)
         {
             try
             {
+                Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Editar"))
+                {
+                    Body = tarea
+                };
+                Respuesta<Tarea> respuesta = await _restClient.PutAsync<Tarea>(peticion);
                 return RedirectToAction(nameof(IndexAsync));
             }
             catch
