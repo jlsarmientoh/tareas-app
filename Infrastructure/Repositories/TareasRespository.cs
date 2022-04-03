@@ -26,7 +26,7 @@ namespace TareasAPI.Repositories
 
         public async Task DeleteAsync(Tarea entity)
         {
-            _dbContext.Tareas.Remove(entity);
+            await Task.Run(() => _dbContext.Tareas.Remove(entity));
         }
 
         public async Task<Tarea> GetByIdAsync(long id)

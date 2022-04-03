@@ -39,9 +39,12 @@ namespace TareasWeb.Controllers
         }
 
         // GET: TareasController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            return View();
+            Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Detalle"));
+            peticion.PathVariables.Add(id.ToString());
+            Respuesta<Tarea> respueta = await _restClient.GetAsync<Tarea>(peticion);
+            return View(respueta.Body);
         }
 
         // GET: TareasController/Create
@@ -107,10 +110,13 @@ namespace TareasWeb.Controllers
         // POST: TareasController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
+                Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Eliminar"));
+                peticion.PathVariables.Add(id.ToString());
+                Respuesta<Tarea> respuesta = await _restClient.DeleteAsync<Tarea>(peticion);
                 return RedirectToAction(nameof(IndexAsync));
             }
             catch
