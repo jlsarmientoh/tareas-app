@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ApplicationCore.DTO;
 using ApplicationCore.Interfaces;
@@ -41,10 +40,8 @@ namespace TareasWeb.Controllers
         // GET: TareasController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Detalle"));
-            peticion.PathVariables.Add(id.ToString());
-            Respuesta<Tarea> respueta = await _restClient.GetAsync<Tarea>(peticion);
-            return View(respueta.Body);
+            
+            return View( await getTareaDetails(id));
         }
 
         // GET: TareasController/Create
@@ -81,9 +78,9 @@ namespace TareasWeb.Controllers
         }
 
         // GET: TareasController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            return View(await getTareaDetails(id));
         }
 
         // POST: TareasController/Edit/5
@@ -97,8 +94,9 @@ namespace TareasWeb.Controllers
                 {
                     Body = tarea
                 };
+                peticion.PathVariables.Add(tarea.Id.ToString());
                 Respuesta<Tarea> respuesta = await _restClient.PutAsync<Tarea>(peticion);
-                return RedirectToAction(nameof(IndexAsync));
+                return RedirectToAction("Index");
             }
             catch
             {
@@ -107,9 +105,9 @@ namespace TareasWeb.Controllers
         }
 
         // GET: TareasController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            return View(await getTareaDetails(id));
         }
 
         // POST: TareasController/Delete/5
@@ -122,12 +120,20 @@ namespace TareasWeb.Controllers
                 Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Eliminar"));
                 peticion.PathVariables.Add(id.ToString());
                 Respuesta<Tarea> respuesta = await _restClient.DeleteAsync<Tarea>(peticion);
-                return RedirectToAction(nameof(IndexAsync));
+                return RedirectToAction("Index");
             }
             catch
             {
                 return View();
             }
+        }
+
+        private async Task<Tarea> getTareaDetails(int id)
+        {
+            Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Detalle"));
+            peticion.PathVariables.Add(id.ToString());
+            Respuesta<Tarea> respuesta = await _restClient.GetAsync<Tarea>(peticion);
+            return respuesta.Body;
         }
     }
 }
