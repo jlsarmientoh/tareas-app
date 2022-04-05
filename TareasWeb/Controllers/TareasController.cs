@@ -41,7 +41,7 @@ namespace TareasWeb.Controllers
         public async Task<ActionResult> Details(int id)
         {
             
-            return View( await getTareaDetails(id));
+            return View("View", await getTareaDetails(id));
         }
 
         // GET: TareasController/Create
