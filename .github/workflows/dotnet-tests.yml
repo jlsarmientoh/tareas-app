@@ -1,10 +1,14 @@
-name: Pruebas proyecto en .NET
+name: Pruebas proyectos en .NET
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - develop
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+      - develop
 
 jobs:
   build:
