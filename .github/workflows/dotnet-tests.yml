@@ -33,7 +33,7 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
         files: ./IntegrationTest/TestResults/**/coverage.cobertura.xml,./FunctionalTests/TestResults/**/coverage.cobertura.xml # optional
         flags: unittests # optional
-        name: codecov-umbrella # optional
+        name: codecov-tareas-dot-net # optional
         fail_ci_if_error: true # optional (default = false)
         verbose: true # optional (default = false)
 
