@@ -11,3 +11,7 @@
 
 .ionide/
 logs/
+
+IntegrationTest/TestResults/
+FunctionalTests/TestResults/
+UnitTests/TestResults/
