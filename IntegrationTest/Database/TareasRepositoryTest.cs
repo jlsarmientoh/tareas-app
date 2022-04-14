@@ -5,7 +5,7 @@ using Xunit;
 
 namespace IntegrationTest
 {
-
+    [Collection("Sequential")]
     public class TareasRepositoryTest : IClassFixture<DatabaseFixture>
     {
 
