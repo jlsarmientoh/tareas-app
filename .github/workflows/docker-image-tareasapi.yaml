@@ -1,11 +1,13 @@
-name: Generar Imagen
+name: Generar Imagen TareasAPI
 
 on:   
   release:
     # Publish `master` as Docker `latest` image.
     branches:
       - master
-
+    paths:
+      - "TareasAPI/**"
+      - ".github/workflows/docker-image-tareasapi.yaml"
     # Publish `v1.2.3` tags as releases.
     tags:
       - v*
