@@ -5,5 +5,7 @@ coverage:
         target: 80%    # the required coverage value
         threshold: 5%  # the leniency in hitting the target
 ignore:
-  - "Infrastructure/Migratios"
-  - "TareasAPI/HealthCheks"
+  - "Infrastructure/Migrations"
+  - "TareasAPI/HealthChecks"
+  - "**/Startup.cs"
+  - "**/Program.cs"
