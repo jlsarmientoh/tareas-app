@@ -64,11 +64,5 @@ namespace IntegrationTests
             connectionMock.Verify(m => m.CreateModel(), Times.Once);
         }
 
-        [Fact]
-        public void shouldThrowExceptionOnProcesarMensaje()
-        {
-            Assert.True(true);
-        }
-
     }
 }

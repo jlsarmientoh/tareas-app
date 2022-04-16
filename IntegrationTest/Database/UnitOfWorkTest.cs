@@ -22,26 +22,32 @@ namespace IntegrationTest
         [Fact]
         public void Confirmar()
         {
+            // Arrange
             Tarea tarea = new Tarea
             {
                 Name = "Crear Tarea Unit of Work Sync",
                 IsComplete = false
             };
+            // Act
             _dbContext.Tareas.Add(tarea);
             _unitOfWork.Confirmar();
+            // Assert
             Assert.True(tarea.Id > 0);
         }
 
         [Fact]
         public async Task ConfirmarAsync()
         {
+            // Arrange
             Tarea tarea = new Tarea
             {
                 Name = "Crear Tarea Unit of Work Async",
                 IsComplete = false
             };
+            // Act
             _dbContext.Tareas.Add(tarea);
             await _unitOfWork.ConfirmarAsync();
+            // Assert
             Assert.True(tarea.Id > 0);
         }
 

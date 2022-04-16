@@ -30,6 +30,7 @@ namespace IntegrationTest
         [Fact]
         public async Task ShouldCreateNewTareaWithRestClient()
         {
+            // Arrange
             Tarea expected = new Tarea
             {
                 Id = 1,
@@ -58,9 +59,10 @@ namespace IntegrationTest
                     Headers = { { "X-Test-Header", "Test-Value" } }
                 });
 
+            // Act
             var restClient = new JSONRestClient<Tarea>(new HttpClient(mockHandler.Object), _mockLogger);
             Respuesta<Tarea> respuesta = await restClient.PostAsync<Tarea>(peticion);
-                        
+            // Assert      
             mockHandler.Protected().Verify(
                 "SendAsync",
                 Times.Exactly(1),
@@ -77,6 +79,7 @@ namespace IntegrationTest
         [Fact]
         public async Task ShouldFailOnCreateNewTareaWithRestClient()
         {
+            // Arrange
             Peticion<Tarea> peticion = new Peticion<Tarea>(RequestUri)
             {
                 Body = new Tarea
@@ -102,10 +105,10 @@ namespace IntegrationTest
                     Headers = { { "X-Test-Header", "Test-Value" } }
                 });
 
+            // Act
             var restClient = new JSONRestClient<Tarea>(new HttpClient(mockHandler.Object), _mockLogger);
-
             Respuesta<Tarea> respuesta = await restClient.PostAsync<Tarea>(peticion);
-                        
+            // Assert     
             mockHandler.Protected().Verify(
                 "SendAsync",
                 Times.Exactly(1),
@@ -121,6 +124,7 @@ namespace IntegrationTest
         [Fact]
         public async Task ShouldUpdateTareaWithRestClient()
         {
+            // Arrange
             Tarea expected = new Tarea
             {
                 Id = 1,
@@ -148,10 +152,10 @@ namespace IntegrationTest
                     Content = new StringContent(json),
                     Headers = { { "X-Test-Header", "Test-Value" } }
                 });
-
+            // Act
             var restClient = new JSONRestClient<Tarea>(new HttpClient(mockHandler.Object), _mockLogger);
             Respuesta<Tarea> respuesta = await restClient.PutAsync<Tarea>(peticion);
-                        
+            // Assert          
             mockHandler.Protected().Verify(
                 "SendAsync",
                 Times.Exactly(1),
@@ -168,6 +172,7 @@ namespace IntegrationTest
         [Fact]
         public async Task ShouldFailOnUpdatingTareaWithRestClient()
         {
+            // Arrange
             Peticion<Tarea> peticion = new Peticion<Tarea>(RequestUri + "/1")
             {
                 Body = new Tarea()
@@ -187,11 +192,10 @@ namespace IntegrationTest
                     Content = new StringContent(json),
                     Headers = { { "X-Test-Header", "Test-Value" } }
                 });
-
+            // Act
             var restClient = new JSONRestClient<Tarea>(new HttpClient(mockHandler.Object), _mockLogger);
-
             Respuesta<Tarea> respuesta = await restClient.PutAsync<Tarea>(peticion);
-                        
+            // Assert     
             mockHandler.Protected().Verify(
                 "SendAsync",
                 Times.Exactly(1),
@@ -207,6 +211,7 @@ namespace IntegrationTest
         [Fact]
         public async Task ShouldDeleteTareaWithRestClient()
         {
+            // Arrange
             Tarea expected = new Tarea();
 
             Peticion<Tarea> peticion = new Peticion<Tarea>(RequestUri + "/" + expected.Id)
@@ -229,10 +234,10 @@ namespace IntegrationTest
                     Content = new StringContent(json),
                     Headers = { { "X-Test-Header", "Test-Value" } }
                 });
-
+            // Act
             var restClient = new JSONRestClient<Tarea>(new HttpClient(mockHandler.Object), _mockLogger);
             Respuesta<Tarea> respuesta = await restClient.DeleteAsync<Tarea>(peticion);
-                        
+            // Assert            
             mockHandler.Protected().Verify(
                 "SendAsync",
                 Times.Exactly(1),
@@ -246,6 +251,7 @@ namespace IntegrationTest
         [Fact]
         public async Task ShouldFailOnDeletingTareaWithRestClient()
         {
+            // Arrange
             Peticion<Tarea> peticion = new Peticion<Tarea>(RequestUri + "/1")
             {
                 Body = new Tarea()
@@ -265,11 +271,10 @@ namespace IntegrationTest
                     Content = new StringContent(json),
                     Headers = { { "X-Test-Header", "Test-Value" } }
                 });
-
+            // Act
             var restClient = new JSONRestClient<Tarea>(new HttpClient(mockHandler.Object), _mockLogger);
-
             Respuesta<Tarea> respuesta = await restClient.DeleteAsync<Tarea>(peticion);
-                        
+            // Assert           
             mockHandler.Protected().Verify(
                 "SendAsync",
                 Times.Exactly(1),
@@ -285,6 +290,7 @@ namespace IntegrationTest
         [Fact]
         public async Task ShouldGetSinlgeTareaWithRestClient()
         {
+            // Arrange
             Tarea expected = new Tarea
             {
                 Id = 1,
@@ -309,10 +315,10 @@ namespace IntegrationTest
                     Content = new StringContent(json),
                     Headers = { { "X-Test-Header", "Test-Value" } }
                 });
-
+            // Act
             var restClient = new JSONRestClient<Tarea>(new HttpClient(mockHandler.Object), _mockLogger);
             Respuesta<Tarea> respuesta = await restClient.GetAsync<Tarea>(peticion);
-                        
+            // Assert            
             mockHandler.Protected().Verify(
                 "SendAsync",
                 Times.Exactly(1),
@@ -329,6 +335,7 @@ namespace IntegrationTest
         [Fact]
         public async Task ShouldFailOnGettingSingleTareaWithRestClient()
         {
+            // Arrange
             Peticion<Tarea> peticion = new Peticion<Tarea>(RequestUri + "/1");
 
             var json = JsonSerializer.Serialize<Tarea>(peticion.Body);
@@ -345,11 +352,10 @@ namespace IntegrationTest
                     Content = new StringContent(json),
                     Headers = { { "X-Test-Header", "Test-Value" } }
                 });
-
+            // Act
             var restClient = new JSONRestClient<Tarea>(new HttpClient(mockHandler.Object), _mockLogger);
-
             Respuesta<Tarea> respuesta = await restClient.GetAsync<Tarea>(peticion);
-                        
+            // Assert          
             mockHandler.Protected().Verify(
                 "SendAsync",
                 Times.Exactly(1),

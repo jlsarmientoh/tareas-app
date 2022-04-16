@@ -12,6 +12,7 @@ namespace IntegrationTests
         [Fact]
         public void shouldThrowExceptionOnProcesarMensaje()
         {
+            // Assert
             Assert.ThrowsAsync<NotImplementedException>(() => kakkaConsumer.ProcesarMensaje(new Mensaje
             {
                 FechaEnvio = DateTime.Now,
