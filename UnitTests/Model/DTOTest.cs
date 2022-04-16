@@ -35,8 +35,18 @@ namespace UnitTests
                 IsComplete = false
             };
 
+            Tarea tarea2 = new Tarea{
+                Id = 1,
+                Name = "Tarea 1",
+                IsComplete = false
+            };
+
+            Assert.Equal(tarea, tarea2);
+            Assert.NotEqual(tarea, null);
+            Assert.NotEqual(tarea, new object());
             Assert.NotNull(tarea);
             Assert.Equal(1, tarea.Id);
+            Assert.True(tarea2.GetHashCode() == tarea.GetHashCode());
             Assert.Equal("Tarea 1", tarea.Name);
             Assert.False(tarea.IsComplete);
         }
