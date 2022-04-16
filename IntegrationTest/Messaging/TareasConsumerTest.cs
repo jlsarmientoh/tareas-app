@@ -1,30 +1,30 @@
 using System;
-using ApplicationCore.DTO;
-using Infrastructure.Messaging;
-using Javeriana.Api.DTO;
-using Xunit;
-using Moq;
-using RabbitMQ.Client;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using Infrastructure.Interface.Messaging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ApplicationCore.DTO;
+using Infrastructure.Interface.Messaging;
+using Infrastructure.Messaging;
+using Javeriana.Api.DTO;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Moq;
+using RabbitMQ.Client;
+using Xunit;
 
 namespace IntegrationTests
 {
-    public class LogConsumerTest
-    {
-        private LogConsumer _logConsumer;
+    public class TareasConsumerTest{
+
+        private TareasConsumer _tareasConsumer;
         private Mock<IConnectionFactory> connectionFactoryMock = new Mock<IConnectionFactory>();
-        private Mock<ILogger<LogConsumer>> loggerMock = new Mock<ILogger<LogConsumer>>();
+        private Mock<ILogger<TareasConsumer>> loggerMock = new Mock<ILogger<TareasConsumer>>();
         private IConfiguration configurationMock = new ConfigurationBuilder().AddInMemoryCollection().Build();
         private Mock<IMessagingFactory> messagingFactoryMock = new Mock<IMessagingFactory>();
 
         private Mock<IModel> channelMock = new Mock<IModel>();
         private Mock<IConnection> connectionMock = new Mock<IConnection>();
 
-        public LogConsumerTest()
+        public TareasConsumerTest()
         {
             
         }
@@ -43,7 +43,7 @@ namespace IntegrationTests
             connectionFactoryMock.Setup(x => x.CreateConnection()).Returns(connectionMock.Object);
             messagingFactoryMock.Setup(m => m.GetRabitMQFactory(It.IsAny<string>())).Returns(connectionFactoryMock.Object);
 
-            _logConsumer = new LogConsumer(messagingFactoryMock.Object, configurationMock, loggerMock.Object);
+            _tareasConsumer = new TareasConsumer(messagingFactoryMock.Object, configurationMock, loggerMock.Object);
             var mensaje = new Mensaje
             {
                 FechaEnvio = DateTime.Now,
@@ -56,12 +56,11 @@ namespace IntegrationTests
             };
 
             // Act
-            await _logConsumer.ProcesarMensaje(mensaje);
+            await _tareasConsumer.ProcesarMensaje(mensaje);
             // Assert
             messagingFactoryMock.Verify(m => m.GetRabitMQFactory(It.IsAny<string>()), Times.Once);
             connectionFactoryMock.Verify(m => m.CreateConnection(), Times.Once);
             connectionMock.Verify(m => m.CreateModel(), Times.Once);
         }
-
     }
 }
