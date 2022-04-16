@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.DTO;
+using Infrastructure.Interface.Messaging;
 using Javeriana.Core.Interfaces.Messaging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -7,8 +8,6 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
-using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,19 +17,16 @@ namespace Infrastructure.Messaging
     public class LogConsumer : BackgroundService, IConsumer
     {
         private readonly ILogger<LogConsumer> _logger;
-        private readonly ConnectionFactory _connectionFactory;
+        private readonly IConnectionFactory _connectionFactory;
         private readonly string _exchangeName;
         private string _queueName;
         private IModel _channel;
         private IConnection _connection;
 
-        public LogConsumer(IConfiguration configuration, ILogger<LogConsumer> logger)
+        public LogConsumer(IMessagingFactory messagingFactory, IConfiguration configuration, ILogger<LogConsumer> logger)
         {
             _logger = logger;
-            _connectionFactory = new ConnectionFactory()
-            {
-                HostName = configuration.GetValue<string>("MQServer")
-            };
+            _connectionFactory = messagingFactory.GetRabitMQFactory(configuration.GetValue<string>("MQServer"));
             _exchangeName = configuration.GetValue<string>("exchangeName");
             Init();
         }
@@ -63,8 +59,9 @@ namespace Infrastructure.Messaging
 
         public Task ProcesarMensaje(Mensaje mensaje)
         {
-            _logger.LogInformation($"[Mensaje recibido] - [Fecha:{mensaje.FechaEnvio}] - [Tarea: {mensaje.Tarea.Id} {mensaje.Tarea.Name} {mensaje.Tarea.IsComplete}]");
-            return Task.CompletedTask;
+            return Task.Run(() => { 
+                _logger.LogInformation($"[Mensaje recibido] - [Fecha:{mensaje.FechaEnvio}] - [Tarea: {mensaje.Tarea.Id} {mensaje.Tarea.Name} {mensaje.Tarea.IsComplete}]");
+            });
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)

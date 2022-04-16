@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.DTO;
+using Infrastructure.Interface.Messaging;
 using Javeriana.Core.Interfaces.Messaging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -7,8 +8,6 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -19,18 +18,15 @@ namespace Infrastructure.Messaging
     public class TareasConsumer : BackgroundService, IConsumer
     {
         private readonly ILogger<TareasConsumer> _logger;
-        private readonly ConnectionFactory _connectionFactory;
+        private readonly IConnectionFactory _connectionFactory;
         private readonly string _queueName;
         private IModel _channel;
         private IConnection _connection;
 
-        public TareasConsumer(IConfiguration configuration, ILogger<TareasConsumer> logger)
+        public TareasConsumer(IMessagingFactory messagingFactory, IConfiguration configuration, ILogger<TareasConsumer> logger)
         {
             _logger = logger;
-            _connectionFactory = new ConnectionFactory()
-            {
-                HostName = configuration.GetValue<string>("MQServer")
-            };
+            _connectionFactory = messagingFactory.GetRabitMQFactory(configuration.GetValue<string>("MQServer"));
             _queueName = configuration.GetValue<string>("queueName");
             Init();
         }

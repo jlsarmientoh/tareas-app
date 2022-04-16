@@ -41,7 +41,7 @@ namespace IntegrationTest
             await _repository.UpdateAsync(tarea);
             var tareaUpdated = await _repository.GetByIdAsync(2);
             Assert.Equal("Modified Tarea 2", tareaUpdated.Name);
-            Assert.Equal(true, tareaUpdated.IsComplete);
+            Assert.True(tareaUpdated.IsComplete);
         }
 
         [Fact]
@@ -71,7 +71,7 @@ namespace IntegrationTest
             var tareaAdded = await _repository.GetByIdAsync(tarea.Id);
             Assert.NotNull(tareaAdded);
             Assert.Equal("Crear Tarea", tareaAdded.Name);
-            Assert.Equal(false, tareaAdded.IsComplete);
+            Assert.False(tareaAdded.IsComplete);
         }
         
     }

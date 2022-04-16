@@ -29,7 +29,6 @@ namespace IntegrationTest
             };
             _dbContext.Tareas.Add(tarea);
             _unitOfWork.Confirmar();
-            Assert.NotNull(tarea.Id);
             Assert.True(tarea.Id > 0);
         }
 
@@ -43,7 +42,6 @@ namespace IntegrationTest
             };
             _dbContext.Tareas.Add(tarea);
             await _unitOfWork.ConfirmarAsync();
-            Assert.NotNull(tarea.Id);
             Assert.True(tarea.Id > 0);
         }
 
