@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Javeriana.Core.Interfaces.Messaging;
 using Infrastructure.Messaging;
 using Javeriana.Core.Tareas.Entities;
+using Infrastructure.Interface.Messaging;
 
 namespace TareasAPI
 {
@@ -59,6 +60,7 @@ namespace TareasAPI
         {
             services.AddControllers();
 
+            services.AddSingleton<IMessagingFactory, RabbitMQFactoryCreator>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAsyncRepository<Tarea>, TareasRespository>();
             

@@ -45,6 +45,8 @@ namespace Javeriana.Api.Services
         {
             var resultado = await _respository.GetByIdAsync(Id);
 
+            if(resultado == null) throw new TareaNoExisteException();
+
             var tarea = new Tarea 
             {
                 Id = resultado.Id,

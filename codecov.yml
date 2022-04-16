@@ -1,0 +1,12 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 80%    # the required coverage value
+        threshold: 5%  # the leniency in hitting the target
+ignore:
+  - "ApplicationCore/Exceptions"
+  - "Infrastructure/Migrations"
+  - "TareasAPI/HealthChecks"
+  - "**/Startup.cs"
+  - "**/Program.cs"

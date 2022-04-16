@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using RabbitMQ.Client;
 using Javeriana.Core.Interfaces.Messaging;
@@ -9,25 +8,23 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using RabbitMQ.Client.Exceptions;
 using Microsoft.Extensions.Logging;
+using Infrastructure.Interface.Messaging;
 
 namespace Infrastructure.Messaging
 {
     public class TareasPublisher : IPublisher, IDisposable
     {
-        private readonly ConnectionFactory _connectionFactory;
+        private readonly IConnectionFactory _connectionFactory;
         private readonly IConnection _connection;
-        private readonly ILogger<TareasConsumer> _logger;
+        private readonly ILogger<TareasPublisher> _logger;
         private IModel _channel;
         private readonly string _queueName;
         private readonly string _exchangeName;
 
-        public TareasPublisher(IConfiguration configuration, ILogger<TareasConsumer> logger) 
+        public TareasPublisher(IMessagingFactory messagingFactory, IConfiguration configuration, ILogger<TareasPublisher> logger) 
         {
             _logger = logger;
-            _connectionFactory = new ConnectionFactory() 
-            { 
-                HostName = configuration.GetValue<string>("MQServer")
-            };
+            _connectionFactory = messagingFactory.GetRabitMQFactory(configuration.GetValue<string>("MQServer"));
             try
             {
                 _connection = _connectionFactory.CreateConnection();
@@ -91,21 +88,17 @@ namespace Infrastructure.Messaging
 
         public Task PublicarMensajeAsync(Mensaje mensaje)
         {
-            Task.Run(() => { 
+            return Task.Run(() => { 
                 PublicarMensaje(mensaje);  
             });
-
-            return Task.CompletedTask;
         }
 
         public Task DistribuirMensajeAsync(Mensaje mensaje)
         {
-            Task.Run(() =>
+            return Task.Run(() =>
             {
                 DistribuirMensaje(mensaje);
             });
-
-            return Task.CompletedTask;
         }
 
         public void Dispose()
