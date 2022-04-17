@@ -1,19 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
 using ApplicationCore.Interfaces;
+using Auth0.AspNetCore.Authentication;
 using HealthChecks.UI.Client;
 using Infrastructure.WebServices;
 using Javeriana.Api.DTO;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TareasWeb.Extensions;
 
 namespace TareasWeb
 {
@@ -34,6 +33,25 @@ namespace TareasWeb
             services.AddSingleton<IRestClient<Tarea>, JSONRestClient<Tarea>>();
 
             services.AddHealthChecks();
+
+            services.ConfigureSameSiteNoneCookies();
+            services.AddAuth0WebAppAuthentication(options => {
+                options.Domain = Configuration["Auth0:Domain"];
+                options.ClientId = Configuration["Auth0:ClientId"];
+                options.ClientSecret = Configuration["Auth0:ClientSecret"];
+            }).WithAccessToken(options => {
+                options.Audience = Configuration["Auth0:Audience"];
+                options.UseRefreshTokens = true;
+                options.Events = new Auth0WebAppWithAccessTokenEvents
+                {
+                    OnMissingRefreshToken = async (context) =>
+                    {
+                        await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                        var authenticationProperties = new LogoutAuthenticationPropertiesBuilder().WithRedirectUri("/").Build();
+                        await context.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
+                    }
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,12 +67,13 @@ namespace TareasWeb
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            // Descomentar esta línea si usa Linux o Mac OS
+            // Descomentar esta lï¿½nea si usa Linux o Mac OS
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
