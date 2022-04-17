@@ -4,6 +4,9 @@ using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using TareasWeb.Models;
+using System.Linq;
+using System.Security.Claims;
 
 namespace TareasWeb.Controllers
 {
@@ -27,6 +30,21 @@ namespace TareasWeb.Controllers
 
             await HttpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+
+            return View(new UserProfileViewModel()
+            {
+                Name = User.Identity.Name,
+                EmailAddress = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value,
+                ProfileImage = User.Claims.FirstOrDefault(c => c.Type == "picture")?.Value,
+                ApiToken = accessToken,
+                NickName = User.Claims.FirstOrDefault(c => c.Type == "nickname")?.Value
+            });
         }
 
         public IActionResult AccessDenied()
