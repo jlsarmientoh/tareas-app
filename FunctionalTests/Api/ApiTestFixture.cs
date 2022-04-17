@@ -1,12 +1,10 @@
 ﻿using Javeriana.Core.Contexts;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TareasAPI;
 
 namespace FunctionalTests.Api
@@ -33,6 +31,10 @@ namespace FunctionalTests.Api
                     options.UseInMemoryDatabase("InMemoryDbForTesting");
                     options.UseInternalServiceProvider(provider);
                 });
+
+                services.AddAuthentication("Test")
+                        .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
+                            "Test", options => {});
 
                 // Build the service provider.
                 var sp = services.BuildServiceProvider();
