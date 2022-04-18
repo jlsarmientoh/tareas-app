@@ -7,6 +7,7 @@ using Javeriana.Api.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Javeriana.Api.Controllers
 {
@@ -26,6 +27,8 @@ namespace Javeriana.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        //[Authorize(Roles = "TASK_VIEWER,TASK_EDITOR")]
+        [Authorize]
         public async Task<IEnumerable<Tarea>> GetTareasAsync()
         {
             _logger.LogInformation("List all tasks");

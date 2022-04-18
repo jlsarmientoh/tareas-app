@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication;
 
 namespace TareasWeb.Controllers
 {
@@ -34,6 +35,7 @@ namespace TareasWeb.Controllers
         {
             _logger.LogInformation("Preparando lista de tareas");
             Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Lista"));
+            peticion.Headers.Add("Authorization", "Bearer " + await HttpContext.GetTokenAsync("access_token"));
             Respuesta<IEnumerable<Tarea>> respuesta = await _restClient.GetAsync<IEnumerable<Tarea>>(peticion);
             _logger.LogInformation("Lista de tareas parseadas, enviando a la vista");
             return View(respuesta.Body);
