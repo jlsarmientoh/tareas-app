@@ -71,6 +71,7 @@ namespace TareasWeb.Controllers
                     {
                         Body = nuevaTarea
                     };
+                    peticion.Headers.Add("Authorization", "Bearer " + await HttpContext.GetTokenAsync("access_token"));
                     Respuesta<Tarea> respuesta = await _restClient.PostAsync<Tarea>(peticion);
                     _logger.LogInformation($"La tarea ha sido creada");
                 }
@@ -104,6 +105,7 @@ namespace TareasWeb.Controllers
                     Body = tarea
                 };
                 peticion.PathVariables.Add(tarea.Id.ToString());
+                peticion.Headers.Add("Authorization", "Bearer " + await HttpContext.GetTokenAsync("access_token"));
                 Respuesta<Tarea> respuesta = await _restClient.PutAsync<Tarea>(peticion);
                 return RedirectToAction("Index");
             }
@@ -130,6 +132,7 @@ namespace TareasWeb.Controllers
             {
                 Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Eliminar"));
                 peticion.PathVariables.Add(id.ToString());
+                peticion.Headers.Add("Authorization", "Bearer " + await HttpContext.GetTokenAsync("access_token"));
                 Respuesta<Tarea> respuesta = await _restClient.DeleteAsync<Tarea>(peticion);
                 return RedirectToAction("Index");
             }
@@ -143,6 +146,7 @@ namespace TareasWeb.Controllers
         {
             Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Detalle"));
             peticion.PathVariables.Add(id.ToString());
+            peticion.Headers.Add("Authorization", "Bearer " + await HttpContext.GetTokenAsync("access_token"));
             Respuesta<Tarea> respuesta = await _restClient.GetAsync<Tarea>(peticion);
             return respuesta.Body;
         }

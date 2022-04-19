@@ -10,6 +10,8 @@ namespace TareasWeb.Models
 
         public string ApiToken { get; set; }
 
+        public string IdToken { get; set; }
+
         public string NickName { get; set; }
     }
 }

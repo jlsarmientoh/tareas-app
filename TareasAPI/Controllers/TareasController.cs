@@ -27,7 +27,6 @@ namespace Javeriana.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        //[Authorize(Roles = "TASK_VIEWER,TASK_EDITOR")]
         [Authorize]
         public async Task<IEnumerable<Tarea>> GetTareasAsync()
         {
@@ -39,6 +38,7 @@ namespace Javeriana.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
         public async Task<ActionResult<Tarea>> GetTarea(int id)
         {
             try{
@@ -56,6 +56,7 @@ namespace Javeriana.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize]
         public async Task<ActionResult<Tarea>> CreateTareaAsync([FromBody]Tarea tarea)
         {
             if(!ModelState.IsValid) return BadRequest();
@@ -69,6 +70,7 @@ namespace Javeriana.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize]
         public async Task<IActionResult> UpdateTareaAsync(long id, [FromBody] Tarea tarea)
         {    
             try{
@@ -88,6 +90,7 @@ namespace Javeriana.Api.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
         public async Task<IActionResult> DeleteTareaAsync(int id){
             try
             {

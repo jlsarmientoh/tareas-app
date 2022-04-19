@@ -34,8 +34,8 @@ namespace TareasAPI
 
         public void ConfigureDevelopmentServices(IServiceCollection services)
         {
-            //services.AddDbContext<TareasContext>(options => options.UseInMemoryDatabase("Tareas"));
-            services.AddDbContext<TareasContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DbTareas")));
+            services.AddDbContext<TareasContext>(options => options.UseInMemoryDatabase("Tareas"));
+            //services.AddDbContext<TareasContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DbTareas")));
             ConfigureServices(services);
         }
 

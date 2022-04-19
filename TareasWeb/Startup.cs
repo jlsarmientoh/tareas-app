@@ -37,8 +37,8 @@ namespace TareasWeb
             services.ConfigureSameSiteNoneCookies();
             services.AddAuth0WebAppAuthentication(options => {
                 options.Domain = Configuration["Auth0:Domain"];
-                options.ClientId = Configuration["Auth0:ClientId"];
-                options.ClientSecret = Configuration["Auth0:ClientSecret"];
+                options.ClientId = Configuration["AUTH0_CLIENT_ID"]; //Variables de entorno
+                options.ClientSecret = Configuration["AUTH0_CLIENT_SECRET"]; //Variables de entorno
             }).WithAccessToken(options => {
                 options.Audience = Configuration["Auth0:Audience"];
                 options.UseRefreshTokens = true;

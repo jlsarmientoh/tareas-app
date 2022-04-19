@@ -36,6 +36,7 @@ namespace TareasWeb.Controllers
         public async Task<IActionResult> Profile()
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
+            var idToken = await HttpContext.GetTokenAsync("id_token");
 
             return View(new UserProfileViewModel()
             {
@@ -43,6 +44,7 @@ namespace TareasWeb.Controllers
                 EmailAddress = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value,
                 ProfileImage = User.Claims.FirstOrDefault(c => c.Type == "picture")?.Value,
                 ApiToken = accessToken,
+                IdToken = idToken,
                 NickName = User.Claims.FirstOrDefault(c => c.Type == "nickname")?.Value
             });
         }
