@@ -9,4 +9,13 @@
 *.csv
 .vs/
 
+.ionide/
+logs/
 
+IntegrationTest/TestResults/
+FunctionalTests/TestResults/
+UnitTests/TestResults/
+
+Identity/mvc-login/.gradle/
+Identity/mvc-login/build/
+Identity/mvc-login/bin/

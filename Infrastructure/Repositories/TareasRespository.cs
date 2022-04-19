@@ -2,9 +2,7 @@
 using Javeriana.Core.Tareas.Entities;
 using Javeriana.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace TareasAPI.Repositories

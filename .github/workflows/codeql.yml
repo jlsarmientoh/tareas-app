@@ -12,17 +12,11 @@
 name: "CodeQL Analisis de seguridad"
 
 on:
-  push:
-    branches: 
-    - master
-    - develop
   pull_request:
     # The branches below must be a subset of the branches above
     branches:
-    - master
-    - develop
-  schedule:
-    - cron: '20 13 * * 2'
+      - master
+      - develop
 
 jobs:
   analyze:
@@ -36,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'csharp', 'javascript' ]
+        language: [ 'csharp', 'javascript']
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://git.io/codeql-language-support
 

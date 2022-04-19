@@ -17,6 +17,9 @@ using Microsoft.EntityFrameworkCore;
 using Javeriana.Core.Interfaces.Messaging;
 using Infrastructure.Messaging;
 using Javeriana.Core.Tareas.Entities;
+using Infrastructure.Interface.Messaging;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace TareasAPI
 {
@@ -31,8 +34,8 @@ namespace TareasAPI
 
         public void ConfigureDevelopmentServices(IServiceCollection services)
         {
-            //services.AddDbContext<TareasContext>(options => options.UseInMemoryDatabase("Tareas"));
-            services.AddDbContext<TareasContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DbTareas")));
+            services.AddDbContext<TareasContext>(options => options.UseInMemoryDatabase("Tareas"));
+            //services.AddDbContext<TareasContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DbTareas")));
             ConfigureServices(services);
         }
 
@@ -59,6 +62,7 @@ namespace TareasAPI
         {
             services.AddControllers();
 
+            services.AddSingleton<IMessagingFactory, RabbitMQFactoryCreator>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAsyncRepository<Tarea>, TareasRespository>();
             
@@ -96,6 +100,15 @@ namespace TareasAPI
                     name : "sql",
                     failureStatus: HealthStatus.Degraded
                 );
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = Configuration["Auth0:Domain"];
+                    options.Audience = Configuration["Auth0:Audience"];
+                });
+            
+            services.AddAuthorization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -111,6 +124,7 @@ namespace TareasAPI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

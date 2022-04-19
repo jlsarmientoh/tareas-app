@@ -32,7 +32,6 @@ namespace Infrastructure.WebServices
             setHeaders(peticion);
             try
             {
-                var json = JsonSerializer.Serialize<T>(peticion.Body);
                 var response = await _client.DeleteAsync(peticion.ResolverRequestURL());
                 respuesta.HttpStatus = (int)response.StatusCode;
                 response.EnsureSuccessStatusCode();
