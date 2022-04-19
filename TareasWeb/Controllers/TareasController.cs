@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 using ApplicationCore.DTO;
 using ApplicationCore.Interfaces;
 using Javeriana.Api.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication;
 
 namespace TareasWeb.Controllers
 {
@@ -28,16 +30,19 @@ namespace TareasWeb.Controllers
 
 
         // GET: TareasController
+        [Authorize(Roles = "TASK_EDITOR,TASK_VIEWER")]
         public async Task<ActionResult> IndexAsync()
         {
             _logger.LogInformation("Preparando lista de tareas");
             Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Lista"));
+            peticion.Headers.Add("Authorization", "Bearer " + await HttpContext.GetTokenAsync("access_token"));
             Respuesta<IEnumerable<Tarea>> respuesta = await _restClient.GetAsync<IEnumerable<Tarea>>(peticion);
             _logger.LogInformation("Lista de tareas parseadas, enviando a la vista");
             return View(respuesta.Body);
         }
 
         // GET: TareasController/Details/5
+        [Authorize(Roles = "TASK_EDITOR,TASK_VIEWER")]
         public async Task<ActionResult> Details(int id)
         {
             
@@ -45,6 +50,7 @@ namespace TareasWeb.Controllers
         }
 
         // GET: TareasController/Create
+        [Authorize(Roles = "TASK_EDITOR")]
         public ActionResult Create()
         {
             return View();
@@ -53,6 +59,7 @@ namespace TareasWeb.Controllers
         // POST: TareasController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "TASK_EDITOR")]
         public async Task<ActionResult> Create([Bind("Name")] Tarea nuevaTarea )
         {
             try
@@ -64,6 +71,7 @@ namespace TareasWeb.Controllers
                     {
                         Body = nuevaTarea
                     };
+                    peticion.Headers.Add("Authorization", "Bearer " + await HttpContext.GetTokenAsync("access_token"));
                     Respuesta<Tarea> respuesta = await _restClient.PostAsync<Tarea>(peticion);
                     _logger.LogInformation($"La tarea ha sido creada");
                 }
@@ -78,6 +86,7 @@ namespace TareasWeb.Controllers
         }
 
         // GET: TareasController/Edit/5
+        [Authorize(Roles = "TASK_EDITOR")]
         public async Task<ActionResult> Edit(int id)
         {
             return View(await getTareaDetails(id));
@@ -86,6 +95,7 @@ namespace TareasWeb.Controllers
         // POST: TareasController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "TASK_EDITOR")]
         public async Task<ActionResult> Edit([Bind("Id,Name,IsComplete")] Tarea tarea)
         {
             try
@@ -95,6 +105,7 @@ namespace TareasWeb.Controllers
                     Body = tarea
                 };
                 peticion.PathVariables.Add(tarea.Id.ToString());
+                peticion.Headers.Add("Authorization", "Bearer " + await HttpContext.GetTokenAsync("access_token"));
                 Respuesta<Tarea> respuesta = await _restClient.PutAsync<Tarea>(peticion);
                 return RedirectToAction("Index");
             }
@@ -105,6 +116,7 @@ namespace TareasWeb.Controllers
         }
 
         // GET: TareasController/Delete/5
+        [Authorize(Roles = "TASK_EDITOR")]
         public async Task<ActionResult> Delete(int id)
         {
             return View(await getTareaDetails(id));
@@ -113,12 +125,14 @@ namespace TareasWeb.Controllers
         // POST: TareasController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "TASK_EDITOR")]
         public async Task<ActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
                 Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Eliminar"));
                 peticion.PathVariables.Add(id.ToString());
+                peticion.Headers.Add("Authorization", "Bearer " + await HttpContext.GetTokenAsync("access_token"));
                 Respuesta<Tarea> respuesta = await _restClient.DeleteAsync<Tarea>(peticion);
                 return RedirectToAction("Index");
             }
@@ -132,6 +146,7 @@ namespace TareasWeb.Controllers
         {
             Peticion<Tarea> peticion = new Peticion<Tarea>(_configuration.GetValue<string>("Api:Tareas:Detalle"));
             peticion.PathVariables.Add(id.ToString());
+            peticion.Headers.Add("Authorization", "Bearer " + await HttpContext.GetTokenAsync("access_token"));
             Respuesta<Tarea> respuesta = await _restClient.GetAsync<Tarea>(peticion);
             return respuesta.Body;
         }
