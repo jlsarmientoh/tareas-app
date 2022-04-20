@@ -78,12 +78,11 @@ namespace UnitTests
 
             _tareasService = new TareasServices(_repository, _unitOfWork, _publisher);
         }
-        public async Task shouldGetListOfTareas()
+        /*public async Task shouldGetListOfTareas()
         {
             var tareas = await _tareasService.GetTareasAsync();
             Assert.NotNull(tareas);
-            //Assert.Equal(3, tareas.Count);
-        }
+        }*/
 
         [Fact]
         public async Task shouldGetTarea()
@@ -126,7 +125,7 @@ namespace UnitTests
             var tarea = await _tareasService.GetTareaAsync(3);
             Assert.NotNull(tarea);
             Assert.True(tarea.Id == 0);
-            Assert.Equal(null, tarea.Name);
+            Assert.Null(tarea.Name);
         }   
     }
 }

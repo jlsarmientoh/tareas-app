@@ -28,11 +28,22 @@ namespace Javeriana.Api.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize]
-        public async Task<IEnumerable<Tarea>> GetTareasAsync()
+        public async Task<ActionResult<IEnumerable<Tarea>>> GetTareasAsync()
         {
-            _logger.LogInformation("List all tasks");
-            var tareas = await _servicio.GetTareasAsync();
-            return tareas;
+            _logger.LogDebug("List all tasks");
+            try
+            {
+                var tareas = await _servicio.GetTareasAsync();
+                _logger.LogInformation("TareasAPI.Metrics.TareasGet.OK");
+                return Ok(tareas);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                _logger.LogInformation(ex, "TareasAPI.Metrics.TareasGet.Error");
+                return Problem(ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }
+            
         }
 
         [HttpGet("{id}")]
@@ -42,15 +53,23 @@ namespace Javeriana.Api.Controllers
         public async Task<ActionResult<Tarea>> GetTarea(int id)
         {
             try{
-                _logger.LogInformation("Find a given task by id {id}", id);
+                _logger.LogDebug("Find a given task by id {id}", id);
                 var tarea = await _servicio.GetTareaAsync(id);
+                _logger.LogInformation("TareasAPI.Metrics.TareasDetail.OK");
                 return Ok(tarea);
             }
             catch (TareaNoExisteException e)
             {
                 _logger.LogError(e.Message);
+                _logger.LogInformation("TareasAPI.Metrics.TareasDetail.ERROR");
                 return NotFound(e.Message);
             } 
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                _logger.LogInformation("TareasAPI.Metrics.TareasDetail.ERROR");
+                return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPost]
@@ -59,11 +78,21 @@ namespace Javeriana.Api.Controllers
         [Authorize]
         public async Task<ActionResult<Tarea>> CreateTareaAsync([FromBody]Tarea tarea)
         {
-            if(!ModelState.IsValid) return BadRequest();
+            try
+            {
+                if(!ModelState.IsValid) return BadRequest();
 
-            _logger.LogInformation("Creating a new task");
-            Tarea tareaCreada = await _servicio.CreateTareaAsync(tarea);
-            return Ok(tareaCreada);
+                _logger.LogDebug("Creating a new task");
+                Tarea tareaCreada = await _servicio.CreateTareaAsync(tarea);
+                _logger.LogInformation("TareasAPI.Metrics.TareasCreated.OK");
+                return Ok(tareaCreada);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                _logger.LogInformation("TareasAPI.Metrics.TareasCreated.ERROR");
+                return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPut("{id}")]
@@ -76,14 +105,21 @@ namespace Javeriana.Api.Controllers
             try{
                 if(!ModelState.IsValid) return BadRequest();
 
-                _logger.LogInformation("Updating task with id {id}", id);
+                _logger.LogDebug("Updating task with id {id}", id);
                 await _servicio.UpdateTareaAsync(id,tarea);
+                _logger.LogInformation("TareasAPI.Metrics.TareasUpdeted.OK");
                 return Ok();
             }
             catch (TareaNoExisteException e)
             {
                 _logger.LogError(e.Message);
+                _logger.LogInformation("TareasAPI.Metrics.TareasUpdated.ERROR");
                 return NotFound(tarea);
+            }
+            catch (Exception e){
+                _logger.LogError(e.Message);
+                _logger.LogInformation("TareasAPI.Metrics.TareasUpdated.ERROR");
+                return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -94,14 +130,21 @@ namespace Javeriana.Api.Controllers
         public async Task<IActionResult> DeleteTareaAsync(int id){
             try
             {
-                _logger.LogInformation("Deleting task {id}", id);
+                _logger.LogTrace("Deleting task {id}", id);
                 await _servicio.DeleteTareaAsync(id);
+                _logger.LogInformation("TareasAPI.Metrics.TareasDeleted.OK");
                 return Ok();
             }
             catch (TareaNoExisteException e)
             {
                 _logger.LogError(e.Message);
+                _logger.LogInformation("TareasAPI.Metrics.TareasDeleted.ERROR");
                 return NotFound(e.Message);
+            }
+            catch (Exception e){
+                _logger.LogError(e.Message);
+                _logger.LogInformation("TareasAPI.Metrics.TareasDeleted.ERROR");
+                return Problem(e.Message, statusCode: StatusCodes.Status500InternalServerError);
             }
         }
     }

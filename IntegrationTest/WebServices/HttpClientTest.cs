@@ -12,7 +12,7 @@ using System.IO;
 using System.Text;
 using ApplicationCore.DTO;
 
-namespace IntegrationTest
+namespace IntegrationTests
 {
     public class HttpClientTest
     {

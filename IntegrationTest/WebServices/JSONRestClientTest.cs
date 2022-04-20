@@ -11,7 +11,7 @@ using Moq;
 using Moq.Protected;
 using System.Threading;
 
-namespace IntegrationTest
+namespace IntegrationTests
 {
     public class JSONRestClientTest
     {

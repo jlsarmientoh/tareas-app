@@ -24,7 +24,3 @@ public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions
         return Task.FromResult(result);
     }
 }
-
-public class UrlEncoder
-{
-}
