@@ -57,4 +57,43 @@ namespace FunctionalTests.Api
             base.ConfigureWebHost(builder);
         }
     }
+
+    public class ApiTestFixtureErrorHandling : WebApplicationFactory<Startup>
+    {
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
+        {
+            builder.UseEnvironment("Testing");
+
+            builder.ConfigureServices(services =>
+            {
+                services.AddEntityFrameworkInMemoryDatabase();
+
+                // Create a new service provider.
+                var provider = services
+                    .AddEntityFrameworkInMemoryDatabase()
+                    .BuildServiceProvider();
+
+                // Add a database context (ApplicationDbContext) using an in-memory 
+                // database for testing.
+                services.AddDbContext<TareasContext>();
+
+                services.AddAuthentication("Test")
+                        .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
+                            "Test", options => {});
+
+                // Build the service provider.
+                var sp = services.BuildServiceProvider();
+
+                using (var scope = sp.CreateScope())
+                {
+                    var scopedServices = scope.ServiceProvider;
+                    var loggerFactory = scopedServices.GetRequiredService<ILoggerFactory>();
+
+                    var logger = scopedServices
+                        .GetRequiredService<ILogger<ApiTestFixture>>();
+                }
+            });
+            base.ConfigureWebHost(builder);
+        }
+    }
 }
