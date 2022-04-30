@@ -42,7 +42,7 @@ namespace UnitTests
             };
 
             Assert.Equal(tarea, tarea2);
-            Assert.NotEqual(tarea, null);
+            Assert.NotNull(tarea);
             Assert.NotEqual(tarea, new object());
             Assert.NotNull(tarea);
             Assert.Equal(1, tarea.Id);

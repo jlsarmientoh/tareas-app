@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using TareasWeb.Extensions;
 
 namespace TareasWeb
@@ -51,6 +52,10 @@ namespace TareasWeb
                         await context.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
                     }
                 };
+            });
+
+            services.AddLogging(logginBuilder => {
+                logginBuilder.AddSeq(Configuration.GetSection("Seq"));
             });
 
             services.AddControllersWithViews();
