@@ -4,6 +4,26 @@ Esta solución de ejemplo tiene cómo obejtivo explorar características y patro
 
 ---
 
+# Build status (GitHub Actions)
+
+| Image | Status |
+| ----- | ------ |
+|Log Worker Service|[![Buidl Status](https://github.com/jlsarmientoh/tareas-app/actions/workflows/docker-image-logworkerservice.yaml/badge.svg)](https://github.com/jlsarmientoh/tareas-app/actions/workflows/docker-image-logworkerservice.yaml)|
+| Tareas API | [![Generar Imagen TareasAPI](https://github.com/jlsarmientoh/tareas-app/actions/workflows/docker-image-tareasapi.yaml/badge.svg)](https://github.com/jlsarmientoh/tareas-app/actions/workflows/docker-image-tareasapi.yaml) |
+| Tareas Web | [![Generar Imagen TareasWeb](https://github.com/jlsarmientoh/tareas-app/actions/workflows/docker-image-tareasweb.yaml/badge.svg)](https://github.com/jlsarmientoh/tareas-app/actions/workflows/docker-image-tareasweb.yaml) |
+| Watchdog | [![Generar Imagen TareasWeb](https://github.com/jlsarmientoh/tareas-app/actions/workflows/docker-image-tareasweb.yaml/badge.svg)](https://github.com/jlsarmientoh/tareas-app/actions/workflows/docker-image-tareasweb.yaml) |
+
+
+| Check | Rama | Status |
+| ------- | ---- | ------ |
+| CodeQL | develop | [![CodeQL Analisis de seguridad](https://github.com/jlsarmientoh/tareas-app/actions/workflows/codeql.yml/badge.svg?branch=develop)](https://github.com/jlsarmientoh/tareas-app/actions/workflows/codeql.yml) |
+| CodeQL | master | [![CodeQL Analisis de seguridad](https://github.com/jlsarmientoh/tareas-app/actions/workflows/codeql.yml/badge.svg?branch=master)](https://github.com/jlsarmientoh/tareas-app/actions/workflows/codeql.yml) |
+| Tests | develop | [![Pruebas proyectos en .NET](https://github.com/jlsarmientoh/tareas-app/actions/workflows/dotnet-tests.yml/badge.svg?branch=develop&event=push)](https://github.com/jlsarmientoh/tareas-app/actions/workflows/dotnet-tests.yml) |
+| Tests | master | [![Pruebas proyectos en .NET](https://github.com/jlsarmientoh/tareas-app/actions/workflows/dotnet-tests.yml/badge.svg?branch=master&event=push)](https://github.com/jlsarmientoh/tareas-app/actions/workflows/dotnet-tests.yml) |
+
+
+---
+
 # Instrucciones
 
 ## Preparación
