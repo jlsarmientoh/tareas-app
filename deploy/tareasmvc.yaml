@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tareasmvc
+  name: tareasmvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tareasmvc
+  template:
+    metadata:
+      labels:
+        app: tareasmvc
+    spec:
+      containers:
+      - image: ghcr.io/jlsarmientoh/tareasweb:release-candidate-3.0
+        name: tareasmvc
+        ports:
+        - containerPort: 80
+          name: http-mvc-svc
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Docker
+        - name: ASPNETCORE_URLS
+          value: http://+:80
+        - name: AUTH0_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: auth0-creds
+              key: auth0-client-id
+        - name: AUTH0_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: auth0-creds
+              key: auth0-client-secret
+        resources: {}
+status: {}

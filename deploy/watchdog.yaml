@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: watchdog
+  name: watchdog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: watchdog
+  template:
+    metadata:
+      labels:
+        app: watchdog
+    spec:
+      containers:
+      - image: ghcr.io/jlsarmientoh/watchdog:release-candidate-3.0
+        name: watchdog
+        ports:
+        - containerPort: 80
+          name: http-watch-svc
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Docker
+        - name: ASPNETCORE_URLS
+          value: http://+:80
+        resources: {}
+status: {}
