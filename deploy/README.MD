@@ -14,12 +14,11 @@
 
 En linux o Mac /etc/hosts; en Windows C:\Windows\System32\drivers\etc\hosts
 
-> 127.0.0.1 internal.ops.com
-
->127.0.0.1 internal.web.com
-
->127.0.0.1 internal.trace.com
-
+```
+127.0.0.1 internal.ops.com
+127.0.0.1 internal.web.com
+127.0.0.1 internal.trace.com
+```
 
 ---
 
