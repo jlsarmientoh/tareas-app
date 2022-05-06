@@ -7,16 +7,20 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - http:
+  - host: internal.ops.com
+    http:
       paths:
-      - path: /watchdog
+      - path: /
         pathType: Prefix
         backend:
           service:
             name: watchdog
             port:
               number: 80
-      - path: /web
+  - host: internal.web.com
+    http:
+      paths:
+      - path: /
         pathType: Prefix
         backend:
           service:
