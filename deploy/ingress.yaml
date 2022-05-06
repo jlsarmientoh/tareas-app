@@ -17,6 +17,16 @@ spec:
             name: watchdog
             port:
               number: 80
+  - host: internal.trace.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: seq
+            port:
+              number: 80
   - host: internal.web.com
     http:
       paths:
