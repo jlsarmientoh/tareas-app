@@ -7,6 +7,12 @@
 1. Crear los despliegues
 1. Crear los [servicios](services)
 1. Crear el [Ingress](ingress.yaml)
+    1. Para configurar el ingress usando nginx deben:
+    1. Ejecutar  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.2.0/deploy/static/provider/cloud/deploy.yaml .
+    1. Esto va a crear un servicio con el ingress controller basado en nginx
+    1. Ejecutar kubectl create deploy/ingress.yaml  para crear el recurso tipo ingress
+	
+
 
 ---
 
